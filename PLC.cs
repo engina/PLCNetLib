@@ -19,11 +19,24 @@ namespace ENDAPLCNetLib
         IPAddress m_ip, m_nm, m_gw, m_dns;
         Logger log;
 
+        public Int32ArrayAccessor MI;
+        public FloatArrayAccessor MF;
+        public BoolArrayAccessor MB;
+        public BoolArrayAccessor QP;
+        public BoolArrayAccessor IP;
+        public UInt16ArrayAccessor MW;
+
         public PLC(IPAddress ip, string password)
         {
             log = new Logger("PLC[" + ip + "]");
             m_pip = ip;
             m_pass = password;
+            MI = new Int32ArrayAccessor(this, 0, 4);
+            MF = new FloatArrayAccessor(this, 4096, 4);
+            MB = new BoolArrayAccessor(this, 8192, 1);
+            QP = new BoolArrayAccessor(this, 9856, 1);
+            IP = new BoolArrayAccessor(this, 10880, 1);
+            MW = new UInt16ArrayAccessor(this, 16896, 2);
         }
 
         public void Connect()
@@ -75,6 +88,7 @@ namespace ENDAPLCNetLib
                     }
                 }
             }
+            log.Debug("Recv: \"" + ASCIIEncoding.ASCII.GetString(ms.GetBuffer()));
             ms.Position = 0;
             return new Response(ms);
         }
@@ -101,6 +115,7 @@ namespace ENDAPLCNetLib
                 log.Warning("Write attempt while disconnected, trying to reconnect");
                 Connect();
             }
+            log.Debug("Sending \"" + ASCIIEncoding.ASCII.GetString(data));
             m_lastCmd = data;
             NetworkStream ns = m_tcp.GetStream();
             ns.Write(data, 0, data.Length);
@@ -132,7 +147,7 @@ namespace ENDAPLCNetLib
             return new IPAddress(BitConverter.GetBytes(addr));
         }
 
-        void UpdateNetwork()
+        internal void UpdateNetwork()
         {
             string[] tokens = Cmd("ifconfig").String.Trim().Split(new char[] { ' ' });
             int ip = Int32.Parse(tokens[1].Substring(2), NumberStyles.HexNumber);
@@ -168,7 +183,10 @@ namespace ENDAPLCNetLib
         public BinaryReader Read(int offset, int len)
         {
             Write("readplc " + offset + " " + len);
-            return ReadUntil().BinaryReader;
+            Response resp =  ReadUntil();
+            if(resp.String.Contains("Out of bounds!"))
+                throw new IndexOutOfRangeException("Offset and/or length out of bounds.");
+            return resp.BinaryReader;
         }
 
         public void WriteRaw(int offset, byte[] data)
@@ -181,11 +199,35 @@ namespace ENDAPLCNetLib
             Cmd(ms.GetBuffer());
         }
 
+        public void WriteRaw(int offset, int value)
+        {
+            MemoryStream ms = new MemoryStream(4);
+            BinaryWriter bw = new BinaryWriter(ms);
+            bw.Write(value);
+            WriteRaw(offset, ms.GetBuffer());
+        }
+
+        public void WriteRaw(int offset, float value)
+        {
+            MemoryStream ms = new MemoryStream(4);
+            BinaryWriter bw = new BinaryWriter(ms);
+            bw.Write(value);
+            WriteRaw(offset, ms.GetBuffer());
+        }
+
+        public void WriteRaw(int offset, ushort value)
+        {
+            MemoryStream ms = new MemoryStream(2);
+            BinaryWriter bw = new BinaryWriter(ms);
+            bw.Write(value);
+            WriteRaw(offset, ms.GetBuffer());
+        }
+
         public DateTime Time
         {
             get
             {
-                return DateTime.ParseExact(Cmd("time").String, "HH:mm:ss dd-MM-yy", CultureInfo.InvariantCulture);
+                return DateTime.ParseExact(Cmd("time").String.Substring(0, 19), "HH:mm:ss dd-MM-yyyy", CultureInfo.InvariantCulture);
             }
             set
             {
@@ -219,6 +261,7 @@ namespace ENDAPLCNetLib
             }
         }
 
+
         public int Model
         {
             get
@@ -235,7 +278,7 @@ namespace ENDAPLCNetLib
                 m_pip = ip;
         }
 
-        public IPAddress IP
+        public IPAddress IPAddress
         {
             get
             {
@@ -266,21 +309,9 @@ namespace ENDAPLCNetLib
         {
             get
             {
+                UpdateNetwork();
                 return m_dns;
             }
-        }
-
-        public int ReadMI(ushort offset)
-        {
-            return Read(offset * 4, 4).ReadInt32();
-        }
-
-        public void WriteMI(int offset, int value)
-        {
-            MemoryStream ms = new MemoryStream();
-            BinaryWriter bw = new BinaryWriter(ms);
-            bw.Write(value);
-            WriteRaw(offset * 4, ms.GetBuffer());
         }
     }
 }

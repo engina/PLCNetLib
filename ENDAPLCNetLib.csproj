@@ -40,12 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayAccessor.cs" />
+    <Compile Include="BoolArrayAccessor.cs" />
     <Compile Include="Finder.cs" />
+    <Compile Include="FloatArrayAccessor.cs" />
+    <Compile Include="Int32ArrayAccessor.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LogManager.cs" />
     <Compile Include="PLC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response.cs" />
+    <Compile Include="UInt16ArrayAccessor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

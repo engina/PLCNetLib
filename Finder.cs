@@ -40,7 +40,7 @@ namespace ENDAPLCNetLib
 
                         m_udpClients.Add(client);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         log.Warning("Could not bind to " + ip.Address + ":3802 on interface " + i.Description);
                     }
