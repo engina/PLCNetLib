@@ -7,9 +7,25 @@ using System.Net.Sockets;
 using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Security.Authentication;
+using ENDAPLCNetLib.Accessors;
+using ENDAPLCNetLib.Diagnostics;
 
 namespace ENDAPLCNetLib
 {
+    /// <summary>
+    /// Represents a PLC device.
+    /// 
+    /// Designed in a blocking fashion, whenever the connection is flaky any API calls
+    /// will block your application.
+    /// <p>So, if you are developing a GUI application take
+    /// your precautions.</p>
+    /// </summary>
+    /// <remarks>
+    /// hello
+    /// there
+    /// buddy
+    /// </remarks>
     public class PLC
     {
         TcpClient m_tcp = new TcpClient();
@@ -19,13 +35,14 @@ namespace ENDAPLCNetLib
         IPAddress m_ip, m_nm, m_gw, m_dns;
         Logger log;
 
-        public Int32ArrayAccessor MI;
-        public FloatArrayAccessor MF;
-        public BoolArrayAccessor MB;
-        public BoolArrayAccessor QP;
-        public BoolArrayAccessor IP;
-        public UInt16ArrayAccessor MW;
-
+        /// <summary>
+        /// Initiates a PLC object. Does not automatically connect until said.
+        /// <see cref="Finder"/> can be used to find IP addresses of PLC devices
+        /// from PLC serial numbers.
+        /// </summary>
+        /// <param name="ip">IP of the PLC</param>
+        /// <param name="password">Password of the PLC</param>
+        /// <seealso cref="Connect"/>
         public PLC(IPAddress ip, string password)
         {
             log = new Logger("PLC[" + ip + "]");
@@ -37,8 +54,15 @@ namespace ENDAPLCNetLib
             QP = new BoolArrayAccessor(this, 9856, 1);
             IP = new BoolArrayAccessor(this, 10880, 1);
             MW = new UInt16ArrayAccessor(this, 16896, 2);
+            
         }
 
+        /// <summary>
+        /// Attempts to connect to the PLC. This method will be automatically called
+        /// if a data send attempt is made prior to connecting, partly because of
+        /// your convenience and partly for making the library handle disconnections better.
+        /// </summary>
+        /// <exception cref="InvalidCredentialException">Thrown if the password is wrong.</exception>
         public void Connect()
         {
             m_tcp.Connect(m_pip, 23);
@@ -49,12 +73,12 @@ namespace ENDAPLCNetLib
             {
                 log.Error("Invalid password");
                 m_tcp.Close();
-                throw new Exception("Invalid password");
+                throw new InvalidCredentialException();
             }
         }
 
 
-        public Response ReadUntil(String[] untils)
+        Response ReadUntil(String[] untils)
         {
             NetworkStream ns = m_tcp.GetStream();
             MemoryStream ms = new MemoryStream();
@@ -126,13 +150,23 @@ namespace ENDAPLCNetLib
             Write(ASCIIEncoding.ASCII.GetBytes(str));
         }
 
-        Response Cmd(byte[] buf)
+        /// <summary>
+        /// Sends a byte stream as a telnet command.
+        /// </summary>
+        /// <param name="buf">telnet command as byte array</param>
+        /// <returns>Response</returns>
+        public Response Cmd(byte[] buf)
         {
             Write(buf);
             return ReadUntil();
         }
 
-        Response Cmd(string cmd)
+        /// <summary>
+        /// Sends a string as a telnet command.
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns>Response</returns>
+        public Response Cmd(string cmd)
         {
             return Cmd(ASCIIEncoding.ASCII.GetBytes(cmd));
         }
@@ -147,7 +181,7 @@ namespace ENDAPLCNetLib
             return new IPAddress(BitConverter.GetBytes(addr));
         }
 
-        internal void UpdateNetwork()
+        void UpdateNetwork()
         {
             string[] tokens = Cmd("ifconfig").String.Trim().Split(new char[] { ' ' });
             int ip = Int32.Parse(tokens[1].Substring(2), NumberStyles.HexNumber);
@@ -160,26 +194,69 @@ namespace ENDAPLCNetLib
             m_dns = Int2IP(dns);
         }
 
+        /// <summary>
+        /// Sends run command to the PLC.
+        /// </summary>
+        /// <returns>true if program started running and false otherwise. false
+        /// can be returned if there's no valid program in the PLC memory.</returns>
         public bool Run()
         {
             return Cmd("run").String.Contains("OK!");
         }
 
+        /// <summary>
+        /// Sends stop command to the PLC.
+        /// </summary>
+        /// <returns>true if PLC has succesfully stopped. false if a clean stop is failed.</returns>
         public bool Stop()
         {
             return Cmd("stop").String.Contains("Task stopped");
         }
 
+        /// <summary>
+        /// Sends a reboot command to the PLC. Your connection will be lost.
+        /// </summary>
         public void Reboot()
         {
             Cmd("reboot");
         }
 
+        /// <summary>
+        /// Reads 4-byte values from PLC memory at arbitrary offsets given as 
+        /// <paramref name="offsets"/>.  Usefull for reading non sequential data
+        /// from PLC memory. Unlike alternatives, it does all the reading in a single network packet
+        /// roundtrip, hence it is higher performance, yet harder to use.
+        /// </summary>
+        /// <example>
+        /// PLC plc = new PLC("192.168.1.2", "1234");
+        /// ushort[] offsets = new ushort[]{0, 4, 256, 260}
+        /// // Will read a total of 16 bytes from the ranges 0-4, 4-8, 256-260, 260-264
+        /// BinaryReader br = plc.ReadMulti(new ushort[]{0, 4, 256, 260});
+        /// for(int i = 0; i &lt; offsets.length; i++)
+        ///     Console.Out.WriteLine(br.ReadInt32());
+        /// 
+        /// </example>
+        /// <param name="offsets">List of offsets in bytes.</param>
+        /// <returns>A <see cref="BinaryReader"/> for you to conveniently read any data in the response.</returns>
         public BinaryReader ReadMulti(ushort[] offsets)
         {
-            return null;
+            string cmd = "readplcm " + (offsets.Length*2) + " ";
+            MemoryStream ms = new MemoryStream(cmd.Length + offsets.Length * 2);
+            BinaryWriter bw = new BinaryWriter(ms);
+            bw.Write(ASCIIEncoding.ASCII.GetBytes(cmd));
+            foreach(ushort o in offsets)
+                bw.Write(o);
+            Write(ms.GetBuffer());
+            return ReadUntil().BinaryReader;
         }
 
+        /// <summary>
+        /// Reads <paramref name="len"/> bytes of data from <paramref name="offset"/> sequentially.
+        /// </summary>
+        /// <param name="offset">Offset in bytes.</param>
+        /// <param name="len">Length in bytes.</param>
+        /// <returns>A <see cref="BinaryReader"/> for you to conveniently read any data in the response.</returns>
+        /// <exception cref="IndexOutOfRangeException">Thrown when offset and/or length is out of PLC memory boundaries.</exception>
         public BinaryReader Read(int offset, int len)
         {
             Write("readplc " + offset + " " + len);
@@ -189,6 +266,11 @@ namespace ENDAPLCNetLib
             return resp.BinaryReader;
         }
 
+        /// <summary>
+        /// Writes whole <paramref name="data"/> to PLC memory at <paramref name="offset"/>, sequentially.
+        /// </summary>
+        /// <param name="offset">Offset in bytes.</param>
+        /// <param name="data">Data to be written</param>
         public void WriteRaw(int offset, byte[] data)
         {
             MemoryStream ms = new MemoryStream();
@@ -196,9 +278,15 @@ namespace ENDAPLCNetLib
             ms.Write(cmd, 0, cmd.Length);
             ms.Write(data, 0, data.Length);
             ms.Position = 0;
-            Cmd(ms.GetBuffer());
+            Response r = Cmd(ms.GetBuffer());
+            Console.Out.WriteLine(r.String);
         }
 
+        /// <summary>
+        /// Writes an Int32 value to the given offset.
+        /// </summary>
+        /// <param name="offset">Offset in bytes</param>
+        /// <param name="value">Int32 value</param>
         public void WriteRaw(int offset, int value)
         {
             MemoryStream ms = new MemoryStream(4);
@@ -207,6 +295,11 @@ namespace ENDAPLCNetLib
             WriteRaw(offset, ms.GetBuffer());
         }
 
+        /// <summary>
+        /// Writes a floating point value to the given offset.
+        /// </summary>
+        /// <param name="offset">Offset in bytes</param>
+        /// <param name="value">Float value</param>
         public void WriteRaw(int offset, float value)
         {
             MemoryStream ms = new MemoryStream(4);
@@ -215,6 +308,11 @@ namespace ENDAPLCNetLib
             WriteRaw(offset, ms.GetBuffer());
         }
 
+        /// <summary>
+        /// Writes a UInt16 value to the given offset.
+        /// </summary>
+        /// <param name="offset">Offset in bytes</param>
+        /// <param name="value">UInt16 value</param>
         public void WriteRaw(int offset, ushort value)
         {
             MemoryStream ms = new MemoryStream(2);
@@ -223,6 +321,11 @@ namespace ENDAPLCNetLib
             WriteRaw(offset, ms.GetBuffer());
         }
 
+        /// <summary>
+        /// Sets or gets time of the RTC (Real Time Clock) of the PLC.
+        /// IMPORTANT: This works only on 38x series of PLC devices, as only they contain a
+        /// RTC hardware.
+        /// </summary>
         public DateTime Time
         {
             get
@@ -236,6 +339,11 @@ namespace ENDAPLCNetLib
             }
         }
 
+        /// <summary>
+        /// Sets or gets the password for this device.
+        /// Getting password does not result in any network communication, it is just the
+        /// value you provided when initiating this object.
+        /// </summary>
         public string Password
         {
             get
@@ -251,6 +359,9 @@ namespace ENDAPLCNetLib
             }
         }
 
+        /// <summary>
+        /// Firmware revision of the PLC device.
+        /// </summary>
         public int Revision
         {
             get
@@ -261,8 +372,7 @@ namespace ENDAPLCNetLib
             }
         }
 
-
-        public int Model
+        int Model
         {
             get
             {
@@ -270,6 +380,28 @@ namespace ENDAPLCNetLib
             }
         }
 
+        /// <summary>
+        /// Configures the networking configuration of the PLC.
+        /// 
+        /// If either <paramref name="ip"/> or <paramref name="dns"/> is 0.0.0.0 or
+        /// 255.255.255.255 the device puts itself in DHCP mode and tries to acquire
+        /// IP automatically.
+        /// 
+        /// If your configuration changed any of <paramref name="ip"/>, <paramref name="nm"/>
+        /// or <paramref name="gw"/> all connections to the device will be closed.
+        /// 
+        /// After sending this command, this object will update its IP configuration regardless of
+        /// any response and will try to reconnect during next data send.
+        /// 
+        /// Note that reconnections will block.
+        /// 
+        /// Also, note that, if a not working DNS configuration is provided, WMI feature of the PLC
+        /// won't be usable.
+        /// </summary>
+        /// <param name="ip">IP Address of the PLC</param>
+        /// <param name="nm">Netmask</param>
+        /// <param name="gw">Gateway IP</param>
+        /// <param name="dns">DNS IP</param>
         public void ConfigureNetwork(IPAddress ip, IPAddress nm, IPAddress gw, IPAddress dns)
         {
             string cmd = String.Format("ifconfig 0x{0} 0x{1} 0x{2} 0x{3}", IP2Int(ip).ToString("X"), IP2Int(nm).ToString("X"), IP2Int(gw).ToString("X"), IP2Int(dns).ToString("X"));
@@ -278,6 +410,9 @@ namespace ENDAPLCNetLib
                 m_pip = ip;
         }
 
+        /// <summary>
+        /// IP address of the PLC device.
+        /// </summary>
         public IPAddress IPAddress
         {
             get
@@ -287,6 +422,9 @@ namespace ENDAPLCNetLib
             }
         }
 
+        /// <summary>
+        /// Netmask of the PLC device.
+        /// </summary>
         public IPAddress Netmask
         {
             get
@@ -296,6 +434,9 @@ namespace ENDAPLCNetLib
             }
         }
 
+        /// <summary>
+        /// Gateway of the PLC device.
+        /// </summary>
         public IPAddress Gateway
         {
             get
@@ -305,6 +446,9 @@ namespace ENDAPLCNetLib
             }
         }
 
+        /// <summary>
+        /// DNS of the PLC device.
+        /// </summary>
         public IPAddress DNS
         {
             get
@@ -312,6 +456,82 @@ namespace ENDAPLCNetLib
                 UpdateNetwork();
                 return m_dns;
             }
+        }
+
+        /// <summary>
+        /// MI registers of PLC, consists of 1024 4-byte integers.
+        /// Each read and write attempt will result in a network transmission.
+        /// <example>
+        /// plc.MI[5] = 10;
+        /// Console.Out.WriteLine(plc.MI[5]);
+        /// </example>
+        /// </summary>
+        /// <exception cref="IndexOutOfRangeException">Thrown when offset and/or length is out of PLC memory boundaries.</exception>
+        public Int32ArrayAccessor MI;
+
+        /// <summary>
+        /// MI registers of PLC. These are general purpose integer registers.
+        /// Consists of 1024 4-byte integers.
+        /// Each read and write attempt will result in a network transmission.
+        /// <example>
+        /// plc.MI[5] = 10;
+        /// Console.Out.WriteLine(plc.MI[5]);
+        /// </example>
+        /// </summary>
+        /// <exception cref="IndexOutOfRangeException">Thrown when offset and/or length is out of PLC memory boundaries.</exception>
+        public FloatArrayAccessor MF;
+
+        /// <summary>
+        /// MI registers of PLC. These are general purpose integer registers.
+        /// Consists of 1024 4-byte integers.
+        /// Each read and write attempt will result in a network transmission.
+        /// <example>
+        /// plc.MI[5] = 10;
+        /// Console.Out.WriteLine(plc.MI[5]);
+        /// </example>
+        /// </summary>
+        /// <exception cref="IndexOutOfRangeException">Thrown when offset and/or length is out of PLC memory boundaries.</exception>
+        public BoolArrayAccessor MB;
+
+        /// <summary>
+        /// MI registers of PLC. These are general purpose integer registers.
+        /// Consists of 1024 4-byte integers.
+        /// Each read and write attempt will result in a network transmission.
+        /// <example>
+        /// plc.MI[5] = 10;
+        /// Console.Out.WriteLine(plc.MI[5]);
+        /// </example>
+        /// </summary>
+        /// <exception cref="IndexOutOfRangeException">Thrown when offset and/or length is out of PLC memory boundaries.</exception>
+        public BoolArrayAccessor QP;
+
+        /// <summary>
+        /// MI registers of PLC. These are general purpose integer registers.
+        /// Consists of 1024 4-byte integers.
+        /// Each read and write attempt will result in a network transmission.
+        /// <example>
+        /// plc.MI[5] = 10;
+        /// Console.Out.WriteLine(plc.MI[5]);
+        /// </example>
+        /// </summary>
+        /// <exception cref="IndexOutOfRangeException">Thrown when offset and/or length is out of PLC memory boundaries.</exception>
+        public BoolArrayAccessor IP;
+
+        /// <summary>
+        /// MI registers of PLC. These are general purpose integer registers.
+        /// Consists of 1024 4-byte integers.
+        /// Each read and write attempt will result in a network transmission.
+        /// <example>
+        /// plc.MI[5] = 10;
+        /// Console.Out.WriteLine(plc.MI[5]);
+        /// </example>
+        /// </summary>
+        /// <exception cref="IndexOutOfRangeException">Thrown when offset and/or length is out of PLC memory boundaries.</exception>
+        public UInt16ArrayAccessor MW;
+
+        public override string ToString()
+        {
+            return m_pip.ToString();
         }
     }
 }

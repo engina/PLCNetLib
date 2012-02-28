@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 
-namespace ENDAPLCNetLib
+namespace ENDAPLCNetLib.Diagnostics
 {
     public static class LogManager
     {
