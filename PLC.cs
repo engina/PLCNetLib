@@ -29,7 +29,7 @@ namespace ENDAPLCNetLib
     public class PLC
     {
         TcpClient m_tcp = new TcpClient();
-        IPAddress m_pip;
+        IPEndPoint m_pip;
         string m_pass;
         byte[] m_lastCmd;
         IPAddress m_ip, m_nm, m_gw, m_dns;
@@ -43,7 +43,7 @@ namespace ENDAPLCNetLib
         /// <param name="ip">IP of the PLC</param>
         /// <param name="password">Password of the PLC</param>
         /// <seealso cref="Connect"/>
-        public PLC(IPAddress ip, string password)
+        public PLC(IPEndPoint ip, string password)
         {
             log = new Logger("PLC[" + ip + "]");
             m_pip = ip;
@@ -65,7 +65,19 @@ namespace ENDAPLCNetLib
         /// <exception cref="InvalidCredentialException">Thrown if the password is wrong.</exception>
         public void Connect()
         {
-            m_tcp.Connect(m_pip, 23);
+            log.Info("Connecting...");
+            // In case m_tcp is disposed. Fixes #63.
+            m_tcp = new TcpClient();
+            try
+            {
+                m_tcp.Connect(m_pip);
+            }
+            catch (Exception e)
+            {
+                log.Error("Connect() error: " + e.Message);
+                Connect();
+                return;
+            }
             ReadUntil("Password: ");
             Write(m_pass);
             string response = ReadUntil(new String[] { "Try again: ", "Password accepted\r\n> " }).String;
@@ -85,14 +97,26 @@ namespace ENDAPLCNetLib
             bool found = false;
             while (!found)
             {
-                int ch = ns.ReadByte();
+                int ch = -1;
+                try
+                {
+                    ch = ns.ReadByte();
+                }
+                catch (Exception e)
+                {
+                    log.Error("ReadUntil ReadByte() error: " + e.Message);
+                }
                 if (ch == -1)
                 {
                     log.Error("Connection closed");
                     m_tcp.Close();
                     log.Info("Reconnecting");
+                    // Save last saved command, because Connect() will overwrite it
+                    byte[] currentLastCmd = m_lastCmd;
                     Connect();
                     log.Info("Rewriting last command");
+                    // Restore attempted command and resend it after a succesful connection.
+                    m_lastCmd = currentLastCmd;
                     Rewrite();
                     return ReadUntil(untils);
                 }
@@ -142,7 +166,8 @@ namespace ENDAPLCNetLib
             log.Debug("Sending \"" + ASCIIEncoding.ASCII.GetString(data));
             m_lastCmd = data;
             NetworkStream ns = m_tcp.GetStream();
-            ns.Write(data, 0, data.Length);
+            
+                ns.Write(data, 0, data.Length);
         }
 
         void Write(string str)
@@ -273,8 +298,9 @@ namespace ENDAPLCNetLib
         /// <param name="data">Data to be written</param>
         public void WriteRaw(int offset, byte[] data)
         {
-            MemoryStream ms = new MemoryStream();
             byte[] cmd = ASCIIEncoding.ASCII.GetBytes("writeplc " + offset + " " + data.Length + " ");
+            // Fixes #65
+            MemoryStream ms = new MemoryStream(cmd.Length + data.Length);
             ms.Write(cmd, 0, cmd.Length);
             ms.Write(data, 0, data.Length);
             ms.Position = 0;
@@ -407,7 +433,7 @@ namespace ENDAPLCNetLib
             string cmd = String.Format("ifconfig 0x{0} 0x{1} 0x{2} 0x{3}", IP2Int(ip).ToString("X"), IP2Int(nm).ToString("X"), IP2Int(gw).ToString("X"), IP2Int(dns).ToString("X"));
             Cmd(cmd);
             if(IP2Int(ip) != 0)
-                m_pip = ip;
+                m_pip.Address = ip;
         }
 
         /// <summary>
