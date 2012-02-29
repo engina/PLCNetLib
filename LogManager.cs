@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using System.Reflection;
@@ -22,12 +21,15 @@ namespace ENDAPLCNetLib.Diagnostics
         private static StreamWriter m_ts = File.CreateText(Assembly.GetCallingAssembly().GetName().Name + ".txt");
         public static Level Filter = Level.Debug;
 
+        public static bool Enabled = true;
+
         public static void Log(Level lvl, string source, string msg)
         {
+            if (!Enabled) return;
             lock (m_lock)
             {
                 if (lvl < Filter) return;
-                m_ts.WriteLine("[" + DateTime.Now + "] [" + lvl + "] [" + source + "] " + msg);
+                m_ts.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss.fff") + "] [" + lvl + "] [" + source + "] " + msg);
                 m_ts.Flush();
             }
         }

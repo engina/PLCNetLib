@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ENDAPLCNetLib.Accessors
 {
     public class BoolArrayAccessor : ArrayAccessor
     {
-        public BoolArrayAccessor(PLC plc, int offset, int elementSize)
-            : base(plc, offset, elementSize)
+        public BoolArrayAccessor(PLC plc, int offset)
+            : base(plc, offset, 1)
         {
         }
 

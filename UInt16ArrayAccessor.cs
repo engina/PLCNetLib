@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ENDAPLCNetLib.Accessors
 {
     public class UInt16ArrayAccessor : ArrayAccessor
     {
-        public UInt16ArrayAccessor(PLC plc, int offset, int elementSize) : base(plc, offset, elementSize)
+        public UInt16ArrayAccessor(PLC plc, int offset) : base(plc, offset, 2)
         {
         }
 

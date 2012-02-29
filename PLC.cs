@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
@@ -10,22 +9,24 @@ using System.Text.RegularExpressions;
 using System.Security.Authentication;
 using ENDAPLCNetLib.Accessors;
 using ENDAPLCNetLib.Diagnostics;
+using System.Runtime.Remoting.Messaging;
 
 namespace ENDAPLCNetLib
 {
     /// <summary>
     /// Represents a PLC device.
     /// 
-    /// Designed in a blocking fashion, whenever the connection is flaky any API calls
-    /// will block your application.
-    /// <p>So, if you are developing a GUI application take
-    /// your precautions.</p>
+    /// <p>
+    /// Please note that all of the functions except the ones beginning with Begin*
+    /// and End* are blocking and calling these functions will block until a response
+    /// is received from the PLC device. If there's a communication problem your
+    /// application will block (freeze) until a timeout occur.
+    /// </p>
+    /// <p>
+    /// You can either use blocking methods in a separate thread or use advanced
+    /// asynchronous methods for a non blocking usage.
+    /// </p>
     /// </summary>
-    /// <remarks>
-    /// hello
-    /// there
-    /// buddy
-    /// </remarks>
     public class PLC
     {
         TcpClient m_tcp = new TcpClient();
@@ -36,9 +37,11 @@ namespace ENDAPLCNetLib
         Logger log;
 
         /// <summary>
+        /// <p>
         /// Initiates a PLC object. Does not automatically connect until said.
         /// <see cref="Finder"/> can be used to find IP addresses of PLC devices
-        /// from PLC serial numbers.
+        /// from PLC serial numbers (MAC addresses).
+        /// </p>
         /// </summary>
         /// <param name="ip">IP of the PLC</param>
         /// <param name="password">Password of the PLC</param>
@@ -48,48 +51,33 @@ namespace ENDAPLCNetLib
             log = new Logger("PLC[" + ip + "]");
             m_pip = ip;
             m_pass = password;
-            MI = new Int32ArrayAccessor(this, 0, 4);
-            MF = new FloatArrayAccessor(this, 4096, 4);
-            MB = new BoolArrayAccessor(this, 8192, 1);
-            QP = new BoolArrayAccessor(this, 9856, 1);
-            IP = new BoolArrayAccessor(this, 10880, 1);
-            MW = new UInt16ArrayAccessor(this, 16896, 2);
+            MI = new Int32ArrayAccessor(this, 0);
+            MF = new FloatArrayAccessor(this, 4096);
+            MB = new BoolArrayAccessor(this, 8192);
+            QP = new BoolArrayAccessor(this, 9856);
+            IP = new BoolArrayAccessor(this, 10880);
+            MW = new UInt16ArrayAccessor(this, 16896);
             
         }
 
         /// <summary>
-        /// Attempts to connect to the PLC. This method will be automatically called
-        /// if a data send attempt is made prior to connecting, partly because of
-        /// your convenience and partly for making the library handle disconnections better.
+        /// Connects to said PLC with given IP and password on default port 23.
         /// </summary>
-        /// <exception cref="InvalidCredentialException">Thrown if the password is wrong.</exception>
-        public void Connect()
+        /// <param name="ip"></param>
+        /// <param name="password"></param>
+        /// <see cref="PLC(IPEndPoint ip, string password)"/>
+        public PLC(IPAddress ip, string password)
+            : this(new IPEndPoint(ip, 23), password)
         {
-            log.Info("Connecting...");
-            // In case m_tcp is disposed. Fixes #63.
-            m_tcp = new TcpClient();
-            try
-            {
-                m_tcp.Connect(m_pip);
-            }
-            catch (Exception e)
-            {
-                log.Error("Connect() error: " + e.Message);
-                Connect();
-                return;
-            }
-            ReadUntil("Password: ");
-            Write(m_pass);
-            string response = ReadUntil(new String[] { "Try again: ", "Password accepted\r\n> " }).String;
-            if (!response.Contains("accepted"))
-            {
-                log.Error("Invalid password");
-                m_tcp.Close();
-                throw new InvalidCredentialException();
-            }
         }
 
+        #region Privates
 
+        /// <summary>
+        /// Waits until any of the strings in the <paramref name="untils"/> array matched.
+        /// </summary>
+        /// <param name="untils">string of arrays to be wait for</param>
+        /// <returns></returns>
         Response ReadUntil(String[] untils)
         {
             NetworkStream ns = m_tcp.GetStream();
@@ -136,21 +124,33 @@ namespace ENDAPLCNetLib
                     }
                 }
             }
-            log.Debug("Recv: \"" + ASCIIEncoding.ASCII.GetString(ms.GetBuffer()));
+            log.Debug("Recv: \"" + ASCIIEncoding.ASCII.GetString(ms.GetBuffer(), 0, (int)ms.Length));
             ms.Position = 0;
             return new Response(ms);
         }
 
+        /// <summary>
+        /// Reads until a <paramref name="str"/> matched
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         Response ReadUntil(string str)
         {
             return ReadUntil(new String[] { str });
         }
 
+        /// <summary>
+        /// Reads until command prompt.
+        /// </summary>
+        /// <returns></returns>
         Response ReadUntil()
         {
             return ReadUntil("\r\n> ");
         }
 
+        /// <summary>
+        /// Rewrites last command
+        /// </summary>
         void Rewrite()
         {
             Write(m_lastCmd);
@@ -166,13 +166,252 @@ namespace ENDAPLCNetLib
             log.Debug("Sending \"" + ASCIIEncoding.ASCII.GetString(data));
             m_lastCmd = data;
             NetworkStream ns = m_tcp.GetStream();
-            
+
+            try
+            {
                 ns.Write(data, 0, data.Length);
+            }
+            catch (Exception e)
+            {
+                log.Error("An error occured while writing data: " + e.Message);
+            }
         }
 
         void Write(string str)
         {
             Write(ASCIIEncoding.ASCII.GetBytes(str));
+        }
+
+        internal static int IP2Int(IPAddress addr)
+        {
+            return BitConverter.ToInt32(addr.GetAddressBytes(), 0);
+        }
+
+        internal static IPAddress Int2IP(int addr)
+        {
+            return new IPAddress(BitConverter.GetBytes(addr));
+        }
+
+        void UpdateNetwork()
+        {
+            string[] tokens = Cmd("ifconfig").String.Trim().Split(new char[] { ' ' });
+            int ip = Int32.Parse(tokens[1].Substring(2), NumberStyles.HexNumber);
+            int nm = Int32.Parse(tokens[3].Substring(2), NumberStyles.HexNumber);
+            int gw = Int32.Parse(tokens[5].Substring(2), NumberStyles.HexNumber);
+            int dns = Int32.Parse(tokens[7].Substring(2), NumberStyles.HexNumber);
+            m_ip = Int2IP(ip);
+            m_nm = Int2IP(nm);
+            m_gw = Int2IP(gw);
+            m_dns = Int2IP(dns);
+        }
+        #endregion
+
+        #region Async variants of some public methods
+        delegate Response CmdByteDelegate(byte[] buf);
+
+        /// <summary>
+        /// <p>
+        /// Sends <paramref name="buf"/> byte array command to the PLC asynchronously.
+        /// </p>
+        /// <p>
+        /// This method returns immediately. When the response is received <paramref name="cb"/>
+        /// will be invoked.
+        /// </p>
+        /// </summary>
+        /// 
+        /// <example>
+        /// <code>
+        /// 
+        ///private void ResponseHandler(IAsyncResult ar)
+        ///{
+        ///    PLC plc = (PLC)ar.AsyncState;
+        ///    Response resp = plc.EndCmd(ar);
+        ///    if (resp.String.Contains("OK!"))
+        ///    {
+        ///        MessageBox.Show("Run command succesfull");
+        ///    }
+        ///    else
+        ///    {
+        ///        MessageBox.Show("Run command failed");
+        ///    }
+        ///}
+        ///
+        ///private void runB_Click(object sender, EventArgs e)
+        ///{
+        ///    Object i = plcLB.SelectedItem;
+        ///    if (i == null) return;
+        ///    PLC plc = (PLC)i;
+        ///
+        ///   plc.BeginCmd(ASCIIEncoding.ASCII.GetBytes("run"), new AsyncCallback(ResponseHandler), plc);
+        ///}
+        /// 
+        /// </code>
+        /// </example>
+        /// <param name="buf">
+        /// </param>/// <param name="cb">Callback to be called when the operation is complete.</param>
+        /// <param name="state">Any state to be passed to <paramref name="cb"/> when invoked, it's a good idea to use the PLC instance as state.</param>
+        /// <returns></returns>
+        public IAsyncResult BeginCmd(byte[] buf, AsyncCallback cb, object state)
+        {
+            log.Debug("BeginCmd");
+            CmdByteDelegate m_cmdFunc = Cmd;
+            return m_cmdFunc.BeginInvoke(buf, cb, state);
+        }
+
+        /// <summary>
+        /// Ends a BeginCmd asynchronous call.
+        /// </summary>
+        /// <param name="ar"></param>
+        /// <returns>Response of the sent command</returns>
+        /// <seealso cref="BeginCmd"/>
+        public Response EndCmd(IAsyncResult ar)
+        {
+            log.Debug("EndCmd");
+            AsyncResult a = (AsyncResult)ar;
+            CmdByteDelegate d = (CmdByteDelegate)a.AsyncDelegate;
+            return d.EndInvoke(ar);
+        }
+
+        delegate void BeginWriteRawDelegate(int offset, byte[] data);
+
+        /// <summary>
+        /// Writes raw data to PLC memory in the given <paramref name="offset"/> asynchronously.
+        /// <p>
+        /// When the write operation is complete <paramref name="cb"/> will be invoked (from another thread).
+        /// </p>
+        /// </summary>
+        /// 
+        /// <example>
+        /// <code>
+        ///         
+        ///void WriteRawAsyncHandler(IAsyncResult ar)
+        ///{
+        ///    AsyncResult a = (AsyncResult)ar;
+        ///    PLC p = (PLC)a.AsyncState;
+        ///    p.EndWriteRaw(ar);
+        ///}
+        ///
+        ///private void massWriteB_Click(object sender, EventArgs e)
+        ///{
+        ///    Object o = plcLB.SelectedItem;
+        ///    if (o == null) return;
+        ///    PLC plc = (PLC)o;
+        ///    MemoryStream ms = new MemoryStream();
+        ///    BinaryWriter bw = new BinaryWriter(ms);
+        ///    for (int i = 0; i &lt; 100; i++)
+        ///        bw.Write(i*2);
+        ///    // Offset 0 is MI registers. So this code writes 100 integers to MI registers
+        ///    // starting from offset 0. Which means MI[0] will be 0, MI[1] will be 2, MI[2] will be 4
+        ///    // and so on. Same pattern can be used to write many MW, MF or MB at once.
+        ///    plc.BeginWriteRaw(0, ms.GetBuffer(), new AsyncCallback(WriteRawAsyncHandler), plc);
+        ///}
+        /// </code>
+        /// </example>
+        /// <param name="offset">Offset of the memory location in the whole PLC memory in bytes.</param>
+        /// <param name="data">Byte array of the data you want to write. This can contain sequential 4-byte integers, floats or 2-byte unsigned hosrts or 1-byte data.</param>
+        /// <param name="cb">Callback to be called when the operation is complete.</param>
+        /// <param name="state">Any state to be passed to <paramref name="cb"/> when invoked, it's a good idea to use the PLC instance as state.</param>
+        /// <returns></returns>
+        public IAsyncResult BeginWriteRaw(int offset, byte[] data, AsyncCallback cb, object state)
+        {
+            log.Debug("BeginWriteRaw");
+            BeginWriteRawDelegate d = WriteRaw;
+            return d.BeginInvoke(offset, data, cb, state);
+        }
+
+        /// <summary>
+        /// Ends a asynchronous BeginWriteRaw call.
+        /// </summary>
+        /// <param name="ar"></param>
+        /// <seealso cref="BeginWriteRaw"/>
+        public void EndWriteRaw(IAsyncResult ar)
+        {
+            log.Debug("EndWriteRaw");
+            AsyncResult a = (AsyncResult)ar;
+            BeginWriteRawDelegate d = (BeginWriteRawDelegate)a.AsyncDelegate;
+            d.EndInvoke(ar);
+        }
+
+        delegate BinaryReader ReadMultiDelegate(ushort[] offsets);
+
+        /// <summary>
+        /// Begins an asynchronous multiple read.
+        /// </summary>
+        /// <param name="offsets"></param>
+        /// <param name="cb"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public IAsyncResult BeginReadMulti(ushort[] offsets, AsyncCallback cb, object state)
+        {
+            ReadMultiDelegate d = ReadMulti;
+            return d.BeginInvoke(offsets, cb, state);
+        }
+
+        public BinaryReader EndReadMulti(IAsyncResult ar)
+        {
+            AsyncResult a = (AsyncResult)ar;
+            ReadMultiDelegate d = (ReadMultiDelegate)a.AsyncDelegate;
+            return d.EndInvoke(ar);
+        }
+
+        delegate BinaryReader ReadDelegate(int offset, int len);
+        /// <summary>
+        /// Starts an async reading.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="len"></param>
+        /// <param name="cb"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public IAsyncResult BeginRead(int offset, int len, AsyncCallback cb, object state)
+        {
+            ReadDelegate d = Read;
+            return d.BeginInvoke(offset, len, cb, state);
+        }
+
+        public BinaryReader EndRead(IAsyncResult ar)
+        {
+            AsyncResult a = (AsyncResult)ar;
+            ReadDelegate d = (ReadDelegate)a.AsyncDelegate;
+            return d.EndInvoke(ar);
+        }
+        #endregion
+
+        #region public methods
+
+        /// <summary>
+        /// <p>Attempts to connect to the PLC. This method will be automatically called
+        /// if a data send attempt is made prior to connecting, partly because of
+        /// your convenience and partly for making the library handle disconnections better.</p>
+        /// <p>
+        /// It is a good practice to initally call this method first to check if the password is correct.
+        /// </p>
+        /// </summary>
+        /// <exception cref="InvalidCredentialException">Thrown if the password is wrong.</exception>
+        public void Connect()
+        {
+            log.Info("Connecting...");
+            // In case m_tcp is disposed. Fixes #63.
+            m_tcp = new TcpClient();
+            try
+            {
+                m_tcp.Connect(m_pip);
+            }
+            catch (Exception e)
+            {
+                log.Error("Connect() error: " + e.Message);
+                Connect();
+                return;
+            }
+            ReadUntil("Password: ");
+            Write(m_pass);
+            string response = ReadUntil(new String[] { "Try again: ", "Password accepted\r\n> " }).String;
+            if (!response.Contains("accepted"))
+            {
+                log.Error("Invalid password");
+                m_tcp.Close();
+                throw new InvalidCredentialException();
+            }
         }
 
         /// <summary>
@@ -194,29 +433,6 @@ namespace ENDAPLCNetLib
         public Response Cmd(string cmd)
         {
             return Cmd(ASCIIEncoding.ASCII.GetBytes(cmd));
-        }
-
-        int IP2Int(IPAddress addr)
-        {
-            return BitConverter.ToInt32(addr.GetAddressBytes(), 0);
-        }
-
-        IPAddress Int2IP(int addr)
-        {
-            return new IPAddress(BitConverter.GetBytes(addr));
-        }
-
-        void UpdateNetwork()
-        {
-            string[] tokens = Cmd("ifconfig").String.Trim().Split(new char[] { ' ' });
-            int ip = Int32.Parse(tokens[1].Substring(2), NumberStyles.HexNumber);
-            int nm = Int32.Parse(tokens[3].Substring(2), NumberStyles.HexNumber);
-            int gw = Int32.Parse(tokens[5].Substring(2), NumberStyles.HexNumber);
-            int dns = Int32.Parse(tokens[7].Substring(2), NumberStyles.HexNumber);
-            m_ip = Int2IP(ip);
-            m_nm = Int2IP(nm);
-            m_gw = Int2IP(gw);
-            m_dns = Int2IP(dns);
         }
 
         /// <summary>
@@ -559,5 +775,6 @@ namespace ENDAPLCNetLib
         {
             return m_pip.ToString();
         }
+        #endregion
     }
 }
