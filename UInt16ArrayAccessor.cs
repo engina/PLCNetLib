@@ -10,7 +10,7 @@ namespace ENDAPLCNetLib.Accessors
         {
         }
 
-        UInt16 this[int index]
+        public UInt16 this[int index]
         {
             get
             {
