@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using ENDA.PLCNetLib;
 using System.Net;
+using System.Security.Authentication;
+using ENDA.PLCNetLib.Diagnostics;
 
 namespace PLCTCPBenchmark
 {
@@ -39,8 +41,20 @@ namespace PLCTCPBenchmark
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            LogManager.LogFired += new LogManager.LogHandler(LogManager_LogFired);
             m_finder = new Finder();
             m_finder.DeviceFound += new Finder.DeviceFoundHandler(m_finder_DeviceFound);
+
+        }
+
+        void LogManager_LogFired(LogManager.Level lvl, DateTime t, string source, string msg)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new LogManager.LogHandler(LogManager_LogFired), new object[] { lvl, t, source, msg });
+                return;
+            }
+            logTB.AppendText("[" + t.ToString("HH:mm:ss.fff") + "] [" + lvl + "] [" + source + "] " + msg + "\r\n");
         }
 
         void m_finder_DeviceFound(string mac, IPAddress ip)
@@ -50,7 +64,7 @@ namespace PLCTCPBenchmark
             // even to GUI thread.
             if (InvokeRequired)
             {
-                Invoke((Action<string, IPAddress>) m_finder_DeviceFound, new object[]{mac, ip});
+                Invoke((Action<string, IPAddress>)m_finder_DeviceFound, new object[] { mac, ip });
                 return;
             }
             scanLB.Items.Add(new PLCEntry(ip, mac));
@@ -104,7 +118,7 @@ namespace PLCTCPBenchmark
                 return;
             }
             object o = scanLB.SelectedItem;
-            if(o == null)
+            if (o == null)
             {
                 MessageBox.Show("Please select a PLC first");
                 return;
@@ -119,7 +133,7 @@ namespace PLCTCPBenchmark
             try
             {
                 IPAddress a = IPAddress.Parse(ipTB.Text);
-                ushort port = (ushort) portNUD.Value;
+                ushort port = (ushort)portNUD.Value;
                 IPEndPoint ip = new IPEndPoint(a, port);
                 if (passTB.Text.Length == 0)
                     throw new Exception("Please enter a password");
@@ -132,7 +146,230 @@ namespace PLCTCPBenchmark
                 MessageBox.Show(exc.Message);
             }
         }
-    
+
+        private void connectB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            connectStatusL.Text = "Connecting...";
+            Application.DoEvents();
+            try
+            {
+                p.Connect();
+                connectStatusL.Text = "Connected!";
+            }
+            catch (InvalidCredentialException exc)
+            {
+                connectStatusL.Text = "Invalid password";
+            }
+            catch (Exception exc)
+            {
+                connectStatusL.Text = "Error: " + exc.Message;
+            }
+        }
+
+        void asyncConnectHandler(IAsyncResult ar)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new AsyncCallback(asyncConnectHandler), new object[] { ar });
+                return;
+            }
+            PLC p = (PLC)ar.AsyncState;
+            try
+            {
+                p.EndConnect(ar);
+                asyncConnectL.Text = "Connected";
+            }
+            catch (InvalidCredentialException exc)
+            {
+                asyncConnectL.Text = "Invalid password";
+            }
+            catch (Exception exc)
+            {
+                asyncConnectL.Text = "Error: " + exc.Message;
+            }
+
+        }
+
+        private void asyncConnectB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            asyncConnectL.Text = "Connecting...";
+            p.BeginConnect(new AsyncCallback(asyncConnectHandler), p);
+        }
+
+        private void miReadB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            int offset = (int)miOffsetNUD.Value;
+            miReadL.Text = p.MI[offset].ToString();
+        }
+
+        private void miWriteB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            try
+            {
+                int offset = (int)miOffsetNUD.Value;
+                p.MI[offset] = Int32.Parse(miWriteTB.Text);
+                miWriteL.Text = "Success";
+            }
+            catch (Exception exc)
+            {
+                miWriteL.Text = "Error: " + exc.Message;
+            }
+        }
+
+        private void mfReadB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            int offset = (int)mfOffsetNUD.Value;
+            mfReadL.Text = p.MF[offset].ToString();
+        }
+
+        private void mfWriteB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            try
+            {
+                int offset = (int)mfOffsetNUD.Value;
+                p.MF[offset] = Single.Parse(mfWriteTB.Text);
+                mfWriteL.Text = "Success";
+            }
+            catch (Exception exc)
+            {
+                mfWriteL.Text = "Error: " + exc.Message;
+            }
+        }
+
+        private void mbReadB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            int offset = (int)mbOffsetNUD.Value;
+            mbReadL.Text = p.MB[offset].ToString();
+        }
+
+        private void mbWriteB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            try
+            {
+                int offset = (int)mbOffsetNUD.Value;
+                p.MB[offset] = mbWriteCB.Checked;
+                mbWriteL.Text = "Success";
+            }
+            catch (Exception exc)
+            {
+                mbWriteL.Text = "Error: " + exc.Message;
+            }
+        }
+
+        private void mwReadB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            int offset = (int)mwOffsetNUD.Value;
+            mwReadL.Text = p.MW[offset].ToString();
+        }
+
+        private void mwWriteB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            try
+            {
+                int offset = (int)mwOffsetNUD.Value;
+                p.MW[offset] = ushort.Parse(mwWriteTB.Text);
+                mwWriteL.Text = "Success";
+            }
+            catch (Exception exc)
+            {
+                mwWriteL.Text = "Error: " + exc.Message;
+            }
+        }
+
+        private void ipReadB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            int offset = (int)ipOffsetNUD.Value;
+            ipReadL.Text = p.IP[offset] ? "ON" : "OFF";
+        }
+
+        private void qpReadB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            int offset = (int)qpOffsetNUD.Value;
+            qpReadL.Text = p.QP[offset].ToString();
+        }
+
+        private void qpWriteB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            try
+            {
+                int offset = (int)qpOffsetNUD.Value;
+                p.QP[offset] = qpWriteCB.Checked;
+                qpWriteL.Text = "Success";
+            }
+            catch (Exception exc)
+            {
+                qpWriteL.Text = "Error: " + exc.Message;
+            }
+        }
+
+        private void timeReadB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            try
+            {
+                timeReadL.Text = p.Time.ToString();
+            }
+            catch (InvalidOperationException exc)
+            {
+                timeReadL.Text = "This device does not have RTC hardware";
+            }
+        }
+
+        private void timeWriteB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            try
+            {
+                p.Time = timeWriteDTP.Value;
+            }
+            catch (InvalidOperationException exc)
+            {
+                timeReadL.Text = "This device does not have RTC hardware";
+            }
+        }
+
+        private void runB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            runL.Text = p.Run() ? "OK" : "FAIL";
+        }
+
+        private void stopB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            stopL.Text = p.Stop() ? "OK" : "FAIL";
+        }
+
 
     }
 }

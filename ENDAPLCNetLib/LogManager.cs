@@ -20,7 +20,7 @@ namespace ENDA.PLCNetLib.Diagnostics
         private static object m_lock = new object();
         private static StreamWriter m_ts = File.CreateText(Assembly.GetCallingAssembly().GetName().Name + ".txt");
         
-        public delegate void LogHandler(Level lvl, string source, string msg);
+        public delegate void LogHandler(Level lvl, DateTime t, string source, string msg);
         public static event LogHandler LogFired;
         public static Level Filter = Level.Debug;
         public static bool Enabled = true;
@@ -31,9 +31,10 @@ namespace ENDA.PLCNetLib.Diagnostics
             lock (m_lock)
             {
                 if (lvl < Filter) return;
+                DateTime t = DateTime.Now;
                 if (LogFired != null)
-                    LogFired(lvl, source, msg);
-                m_ts.WriteLine("[" + DateTime.Now.ToString("HH:mm:ss.fff") + "] [" + lvl + "] [" + source + "] " + msg);
+                    LogFired(lvl, t, source, msg);
+                m_ts.WriteLine("[" + t.ToString("HH:mm:ss.fff") + "] [" + lvl + "] [" + source + "] " + msg);
                 m_ts.Flush();
             }
         }

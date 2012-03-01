@@ -375,6 +375,21 @@ namespace ENDA.PLCNetLib
             ReadDelegate d = (ReadDelegate)a.AsyncDelegate;
             return d.EndInvoke(ar);
         }
+
+
+        delegate void ConnectDelegate();
+        public IAsyncResult BeginConnect(AsyncCallback cb, object state)
+        {
+            ConnectDelegate d = Connect;
+            return d.BeginInvoke(cb, state);
+        }
+
+        public void EndConnect(IAsyncResult ar)
+        {
+            AsyncResult a = (AsyncResult)ar;
+            ConnectDelegate d = (ConnectDelegate)a.AsyncDelegate;
+            d.EndInvoke(ar);
+        }
         #endregion
 
         #region public methods
@@ -400,8 +415,7 @@ namespace ENDA.PLCNetLib
             catch (Exception e)
             {
                 log.Error("Connect() error: " + e.Message);
-                Connect();
-                return;
+                throw e;
             }
             ReadUntil("Password: ");
             Write(m_pass);
@@ -568,16 +582,25 @@ namespace ENDA.PLCNetLib
         /// IMPORTANT: This works only on 38x series of PLC devices, as only they contain a
         /// RTC hardware.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the device is not an 386. Only 386x models have an RTC hardware.</exception>
         public DateTime Time
         {
             get
             {
-                return DateTime.ParseExact(Cmd("time").String.Substring(0, 19), "HH:mm:ss dd-MM-yyyy", CultureInfo.InvariantCulture);
+                Response resp = Cmd("time");
+                if(resp.String.Contains("FAILED!"))
+                {
+                    throw new InvalidOperationException();
+                }
+                return DateTime.ParseExact(resp.String.Substring(0, 19), "HH:mm:ss dd-MM-yyyy", CultureInfo.InvariantCulture);
             }
             set
             {
                 string str = "settime " + value.ToString("HH:mm:ss dd-MM-yy " + (int)value.DayOfWeek);
-                Cmd(str).String.Contains("OK!");
+                if (!Cmd(str).String.Contains("OK!"))
+                {
+                    throw new InvalidOperationException();
+                }
             }
         }
 
