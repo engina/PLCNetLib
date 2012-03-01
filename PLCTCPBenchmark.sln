@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLCTCPBenchmark", "PLCTCPBenchmark\PLCTCPBenchmark.csproj", "{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ENDAPLCNetLib", "ENDAPLCNetLib\ENDAPLCNetLib.csproj", "{A6518153-42E5-433C-B2F6-71A8D7245C94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ENDAPLCNetLibUnitTests", "ENDAPLCNetLibUnitTests\ENDAPLCNetLibUnitTests.csproj", "{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C5A1038F-4594-4087-A084-911DF82E6183}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		PLCTCPBenchmark.vsmdi = PLCTCPBenchmark.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = PLCTCPBenchmark.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|x86.ActiveCfg = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|x86.Build.0 = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|Any CPU.ActiveCfg = Release|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|Mixed Platforms.Build.0 = Release|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|x86.ActiveCfg = Release|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|x86.Build.0 = Release|x86
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Release|x86.ActiveCfg = Release|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
