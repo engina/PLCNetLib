@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ENDAPLCNetLib.Diagnostics
+namespace ENDA.PLCNetLib.Diagnostics
 {
     public class Logger
     {

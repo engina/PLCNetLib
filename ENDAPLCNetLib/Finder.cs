@@ -5,9 +5,9 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
-using ENDAPLCNetLib.Diagnostics;
+using ENDA.PLCNetLib.Diagnostics;
 
-namespace ENDAPLCNetLib
+namespace ENDA.PLCNetLib
 {
     /// <summary>
     /// <p>This helper class helps you find IP addresses of the PLC devices on your network

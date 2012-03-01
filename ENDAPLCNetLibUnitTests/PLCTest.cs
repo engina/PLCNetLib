@@ -1,10 +1,10 @@
-﻿using ENDAPLCNetLib;
+﻿using ENDA.PLCNetLib;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
 using System.Security.Authentication;
 
-namespace ENDAPLCNetLibUnitTests
+namespace ENDA.PLCNetLibUnitTests
 {
     
     
@@ -46,13 +46,14 @@ namespace ENDAPLCNetLibUnitTests
         {
             target = new PLC(ip, password);
         }
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
+        
+        // Use ClassCleanup to run code after all tests in a class have run
+        [ClassCleanup()]
+        public static void MyClassCleanup()
+        {
+            target.Disconnect();
+        }
+        
         //Use TestInitialize to run code before running each test
         //[TestInitialize()]
         //public void MyTestInitialize()
@@ -67,7 +68,8 @@ namespace ENDAPLCNetLibUnitTests
         //
         #endregion
 
-        static IPEndPoint ip = new IPEndPoint(IPAddress.Parse("78.171.23.73"), 23);
+        //static IPEndPoint ip = new IPEndPoint(IPAddress.Parse("78.171.23.73"), 23);
+        static IPEndPoint ip = new IPEndPoint(IPAddress.Parse("192.168.1.38"), 23);
         static string password = "4321";
         /// <summary>
         ///A test for Connect
@@ -88,13 +90,11 @@ namespace ENDAPLCNetLibUnitTests
             target.Connect();
         }
 
-        public void RunTest()
+        [TestMethod()]
+        public void RunStopTest()
         {
-            PLC target = new PLC(ip, password);
-            bool expected = true;
-            bool actual;
-            actual = target.Run();
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(true, target.Run());
+            Assert.AreEqual(true, target.Stop());
         }
 
         [TestMethod()]
@@ -115,6 +115,13 @@ namespace ENDAPLCNetLibUnitTests
             Assert.AreEqual(Single.MaxValue, target.MF[1023]);
         }
 
+        [TestMethod()]
+        public void TimeTest()
+        {
+            target.Time = DateTime.Now;
+            TimeSpan ts = DateTime.Now - target.Time;
+            Assert.AreEqual(0, ts.Seconds, 5);
+        }
 
         [TestMethod()]
         public void MemTest()

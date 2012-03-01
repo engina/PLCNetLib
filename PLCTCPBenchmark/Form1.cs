@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using ENDAPLCNetLib;
+using ENDA.PLCNetLib;
 using System.Net;
 using System.IO;
 using System.Net.Sockets;

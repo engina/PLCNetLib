@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ENDAPLCNetLib.Accessors
+namespace ENDA.PLCNetLib.Accessors
 {
     public class FloatArrayAccessor : ArrayAccessor
     {

@@ -7,11 +7,11 @@ using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Security.Authentication;
-using ENDAPLCNetLib.Accessors;
-using ENDAPLCNetLib.Diagnostics;
+using ENDA.PLCNetLib.Accessors;
+using ENDA.PLCNetLib.Diagnostics;
 using System.Runtime.Remoting.Messaging;
 
-namespace ENDAPLCNetLib
+namespace ENDA.PLCNetLib
 {
     /// <summary>
     /// Represents a PLC device.
@@ -776,5 +776,10 @@ namespace ENDAPLCNetLib
             return m_pip.ToString();
         }
         #endregion
+
+        public void Disconnect()
+        {
+            m_tcp.Close();
+        }
     }
 }

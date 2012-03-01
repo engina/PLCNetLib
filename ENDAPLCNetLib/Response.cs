@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace ENDAPLCNetLib
+namespace ENDA.PLCNetLib
 {
     /// <summary>
     /// This is a helper class that represents a telnet response received from PLC.
