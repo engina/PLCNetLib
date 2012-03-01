@@ -51,7 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ENDAPLCNetLib\ENDAPLCNetLib.csproj">
+    <ProjectReference Include="..\ENDAPLCNetLib\PLCNetLib.csproj">
       <Project>{A6518153-42E5-433C-B2F6-71A8D7245C94}</Project>
       <Name>ENDAPLCNetLib</Name>
     </ProjectReference>
