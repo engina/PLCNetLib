@@ -45,7 +45,7 @@ namespace ENDA.PLCNetLib
         }
 
         /// <summary>
-        /// Returns the response as a string.
+        /// Returns the response as a string (without the trailing command prompt).
         /// </summary>
         public String String
         {

@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
 using System.Security.Authentication;
+using System.Text;
+using System.IO;
 
 namespace ENDA.PLCNetLibUnitTests
 {
@@ -40,18 +42,18 @@ namespace ENDA.PLCNetLibUnitTests
         //You can use the following additional attributes as you write your tests:
         //
         //Use ClassInitialize to run code before running the first test in the class
-        static PLC target;
+        static PLC plc;
         [ClassInitialize()]
         public static void MyClassInitialize(TestContext testContext)
         {
-            target = new PLC(ip, password);
+            plc = new PLC(ip, password);
         }
         
         // Use ClassCleanup to run code after all tests in a class have run
         [ClassCleanup()]
         public static void MyClassCleanup()
         {
-            target.Disconnect();
+            plc.Disconnect();
         }
         
         //Use TestInitialize to run code before running each test
@@ -93,59 +95,88 @@ namespace ENDA.PLCNetLibUnitTests
         [TestMethod()]
         public void RunStopTest()
         {
-            Assert.AreEqual(true, target.Run());
-            Assert.AreEqual(true, target.Stop());
+            Assert.AreEqual(true, plc.Run());
+            Assert.AreEqual(true, plc.Stop());
         }
 
         [TestMethod()]
         public void MITest()
         {
-            target.MI[0] = Int32.MinValue;
-            target.MI[1023] = Int32.MaxValue;
-            Assert.AreEqual(Int32.MinValue, target.MI[0]);
-            Assert.AreEqual(Int32.MaxValue, target.MI[1023]);
+            plc.MI[0] = Int32.MinValue;
+            plc.MI[1023] = Int32.MaxValue;
+            Assert.AreEqual(Int32.MinValue, plc.MI[0]);
+            Assert.AreEqual(Int32.MaxValue, plc.MI[1023]);
         }
 
         [TestMethod()]
         public void MFTest()
         {
-            target.MF[0] = Single.MinValue;
-            target.MF[1023] = Single.MaxValue;
-            Assert.AreEqual(Single.MinValue, target.MF[0]);
-            Assert.AreEqual(Single.MaxValue, target.MF[1023]);
+            plc.MF[0] = Single.MinValue;
+            plc.MF[1023] = Single.MaxValue;
+            Assert.AreEqual(Single.MinValue, plc.MF[0]);
+            Assert.AreEqual(Single.MaxValue, plc.MF[1023]);
         }
 
         [TestMethod()]
         public void TimeTest()
         {
-            target.Time = DateTime.Now;
-            TimeSpan ts = DateTime.Now - target.Time;
+            plc.Time = DateTime.Now;
+            TimeSpan ts = DateTime.Now - plc.Time;
             Assert.AreEqual(0, ts.Seconds, 5);
+        }
+
+        [TestMethod()]
+        public void CmdAsyncTest()
+        {
+            IAsyncResult ar = plc.BeginCmd(ASCIIEncoding.ASCII.GetBytes("help"), null, null);
+            ar.AsyncWaitHandle.WaitOne();
+            Response resp = plc.EndCmd(ar);
+            string str = resp.String;
+            Assert.AreEqual(true, resp.String.StartsWith("Available commands:"));
+        }
+
+        [TestMethod()]
+        public void ReadWriteRawAsyncTest()
+        {
+            const int INT_COUNT = 200;
+            MemoryStream ms = new MemoryStream(INT_COUNT * 4);
+            BinaryWriter bw = new BinaryWriter(ms);
+            for (int i = 0; i < INT_COUNT; i++)
+                bw.Write(i * 2);
+            IAsyncResult ar = plc.BeginWriteRaw(0, ms.GetBuffer(), null, null);
+            ar.AsyncWaitHandle.WaitOne();
+            plc.EndWriteRaw(ar);
+
+            ar = plc.BeginRead(0, INT_COUNT * 4, null, null);
+            ar.AsyncWaitHandle.WaitOne();
+            BinaryReader br = plc.EndRead(ar);
+            for (int i = 0; i < INT_COUNT; i++)
+                Assert.AreEqual(i * 2, br.ReadInt32());
         }
 
         [TestMethod()]
         public void MemTest()
         {
             for (int i = 0; i < 1024; i++)
-                target.MI[i] = i * 10;
+                plc.MI[i] = i * 10;
             for (int i = 0; i < 1024; i++)
-                target.MF[i] = i * 11.0f;
+                plc.MF[i] = i * 11.0f;
             for (int i = 0; i < 512; i++)
-                target.MW[i] = (ushort)(i * 12);
+                plc.MW[i] = (ushort)(i * 12);
             for (int i = 0; i < 1024; i++)
-                target.MB[i] = (i % 2) == 1 ? true : false;
+                plc.MB[i] = (i % 2) == 1 ? true : false;
             for (int i = 0; i < 1024; i++)
-                target.QP[i] = (i % 2) == 1 ? true : false;
+                plc.QP[i] = (i % 2) == 1 ? true : false;
             for (int i = 0; i < 1024; i++)
-                Assert.AreEqual(i * 10, target.MI[i]);
+                Assert.AreEqual(i * 10, plc.MI[i]);
             for (int i = 0; i < 1024; i++)
-                Assert.AreEqual(i * 11.0f, target.MF[i]);
+                Assert.AreEqual(i * 11.0f, plc.MF[i]);
             for (int i = 0; i < 512; i++)
-                Assert.AreEqual((ushort)(i * 12), target.MW[i]);
+                Assert.AreEqual((ushort)(i * 12), plc.MW[i]);
             for (int i = 0; i < 1024; i++)
-                Assert.AreEqual((i % 2) == 1 ? true : false, target.MB[i]);
+                Assert.AreEqual((i % 2) == 1 ? true : false, plc.MB[i]);
             for (int i = 0; i < 1024; i++)
-                Assert.AreEqual((i % 2) == 1 ? true : false, target.QP[i]);
+                Assert.AreEqual((i % 2) == 1 ? true : false, plc.QP[i]);
         }
     }
 }

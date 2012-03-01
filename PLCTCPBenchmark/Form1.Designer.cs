@@ -49,7 +49,7 @@
             // plcLB
             // 
             this.plcLB.FormattingEnabled = true;
-            this.plcLB.Location = new System.Drawing.Point(12, 53);
+            this.plcLB.Location = new System.Drawing.Point(12, 52);
             this.plcLB.Name = "plcLB";
             this.plcLB.Size = new System.Drawing.Size(248, 95);
             this.plcLB.TabIndex = 0;
@@ -83,7 +83,7 @@
             // 
             // runB
             // 
-            this.runB.Location = new System.Drawing.Point(266, 57);
+            this.runB.Location = new System.Drawing.Point(266, 56);
             this.runB.Name = "runB";
             this.runB.Size = new System.Drawing.Size(75, 23);
             this.runB.TabIndex = 5;
@@ -93,7 +93,7 @@
             // 
             // stopB
             // 
-            this.stopB.Location = new System.Drawing.Point(266, 86);
+            this.stopB.Location = new System.Drawing.Point(266, 85);
             this.stopB.Name = "stopB";
             this.stopB.Size = new System.Drawing.Size(75, 23);
             this.stopB.TabIndex = 6;
@@ -103,7 +103,7 @@
             // 
             // readB
             // 
-            this.readB.Location = new System.Drawing.Point(15, 227);
+            this.readB.Location = new System.Drawing.Point(15, 226);
             this.readB.Name = "readB";
             this.readB.Size = new System.Drawing.Size(60, 23);
             this.readB.TabIndex = 7;
@@ -114,7 +114,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 168);
+            this.label1.Location = new System.Drawing.Point(12, 167);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(63, 13);
             this.label1.TabIndex = 9;
@@ -122,14 +122,14 @@
             // 
             // miAddrNUD
             // 
-            this.miAddrNUD.Location = new System.Drawing.Point(81, 166);
+            this.miAddrNUD.Location = new System.Drawing.Point(81, 165);
             this.miAddrNUD.Name = "miAddrNUD";
             this.miAddrNUD.Size = new System.Drawing.Size(60, 20);
             this.miAddrNUD.TabIndex = 10;
             // 
             // valueTB
             // 
-            this.valueTB.Location = new System.Drawing.Point(15, 201);
+            this.valueTB.Location = new System.Drawing.Point(15, 200);
             this.valueTB.Name = "valueTB";
             this.valueTB.Size = new System.Drawing.Size(60, 20);
             this.valueTB.TabIndex = 11;
@@ -137,14 +137,14 @@
             // valL
             // 
             this.valL.AutoSize = true;
-            this.valL.Location = new System.Drawing.Point(90, 232);
+            this.valL.Location = new System.Drawing.Point(90, 231);
             this.valL.Name = "valL";
             this.valL.Size = new System.Drawing.Size(0, 13);
             this.valL.TabIndex = 12;
             // 
             // writeB
             // 
-            this.writeB.Location = new System.Drawing.Point(81, 199);
+            this.writeB.Location = new System.Drawing.Point(81, 198);
             this.writeB.Name = "writeB";
             this.writeB.Size = new System.Drawing.Size(60, 23);
             this.writeB.TabIndex = 13;
@@ -154,7 +154,7 @@
             // 
             // massWriteB
             // 
-            this.massWriteB.Location = new System.Drawing.Point(266, 116);
+            this.massWriteB.Location = new System.Drawing.Point(266, 115);
             this.massWriteB.Name = "massWriteB";
             this.massWriteB.Size = new System.Drawing.Size(75, 23);
             this.massWriteB.TabIndex = 14;
@@ -184,7 +184,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(352, 258);
+            this.ClientSize = new System.Drawing.Size(748, 756);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.massWriteB);

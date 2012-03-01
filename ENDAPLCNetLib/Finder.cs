@@ -85,7 +85,8 @@ namespace ENDA.PLCNetLib
             if (!m_dict.ContainsKey(str) || !m_dict[str].Equals(m_remoteEP.Address))
             {
                 m_dict[str] = m_remoteEP.Address;
-                DeviceFound(str, m_dict[str]);
+                if (DeviceFound != null)
+                    DeviceFound(str, m_dict[str]);
             }
             client.BeginReceive(new AsyncCallback(ReceiveCallback), client);
         }
