@@ -49,6 +49,7 @@ namespace ENDA.PLCNetLib
             NetworkInterface[] ifs = NetworkInterface.GetAllNetworkInterfaces();
             foreach (NetworkInterface i in ifs)
             {
+                Console.Out.WriteLine(i.Name);
                 if (i.OperationalStatus != OperationalStatus.Up) continue;
                 if (!i.Supports(NetworkInterfaceComponent.IPv4)) continue;
                 IPInterfaceProperties prop = i.GetIPProperties();

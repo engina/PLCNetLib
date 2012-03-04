@@ -10,6 +10,7 @@ using ENDA.PLCNetLib;
 using System.Net;
 using System.Security.Authentication;
 using ENDA.PLCNetLib.Diagnostics;
+using Be.Windows.Forms;
 
 namespace PLCTCPBenchmark
 {
@@ -44,6 +45,14 @@ namespace PLCTCPBenchmark
             LogManager.LogFired += new LogManager.LogHandler(LogManager_LogFired);
             m_finder = new Finder();
             m_finder.DeviceFound += new Finder.DeviceFoundHandler(m_finder_DeviceFound);
+            writeRawHB.StringViewVisible = true;
+            writeRawHB.LineInfoVisible = true;
+            writeRawHB.UseFixedBytesPerLine = true;
+            writeRawHB.BytesPerLine = 16;
+            writeRawP.Controls.Add(writeRawHB);
+            DynamicByteProvider dbp = new DynamicByteProvider(new byte[1]);
+            dbp.LengthChanged +=new EventHandler(writeRawLengthChangedHandler);
+            writeRawHB.ByteProvider = dbp;
 
         }
 
@@ -151,12 +160,12 @@ namespace PLCTCPBenchmark
         {
             PLC p = (PLC)plcCB.SelectedItem;
             if (p == null) return;
-            connectStatusL.Text = "Connecting...";
+            connectStatusL.Text = "Connecting synchronously...";
             Application.DoEvents();
             try
             {
                 p.Connect();
-                connectStatusL.Text = "Connected!";
+                connectStatusL.Text = "Connected synchronously!";
             }
             catch (InvalidCredentialException exc)
             {
@@ -179,15 +188,15 @@ namespace PLCTCPBenchmark
             try
             {
                 p.EndConnect(ar);
-                asyncConnectL.Text = "Connected";
+                connectStatusL.Text = "Connected asynchronously!";
             }
             catch (InvalidCredentialException exc)
             {
-                asyncConnectL.Text = "Invalid password";
+                connectStatusL.Text = "Invalid password";
             }
             catch (Exception exc)
             {
-                asyncConnectL.Text = "Error: " + exc.Message;
+                connectStatusL.Text = "Error: " + exc.Message;
             }
 
         }
@@ -196,7 +205,7 @@ namespace PLCTCPBenchmark
         {
             PLC p = (PLC)plcCB.SelectedItem;
             if (p == null) return;
-            asyncConnectL.Text = "Connecting...";
+            connectStatusL.Text = "Connecting asynchronously...";
             p.BeginConnect(new AsyncCallback(asyncConnectHandler), p);
         }
 
@@ -370,6 +379,14 @@ namespace PLCTCPBenchmark
             stopL.Text = p.Stop() ? "OK" : "FAIL";
         }
 
+        private void writeRawOffsetNUD_ValueChanged(object sender, EventArgs e)
+        {
+            writeRawHB.LineInfoOffset = (long)writeRawOffsetNUD.Value;
+        }
 
+        void writeRawLengthChangedHandler(object sender, EventArgs e)
+        {
+            writeRawLengthL.Text = String.Format("Length: {0}", ((DynamicByteProvider)sender).Length);
+        }
     }
 }

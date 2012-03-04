@@ -125,55 +125,12 @@ namespace ENDA.PLCNetLib
                 }
             }
 
-            log.Debug("Recv: \r\n" + ByteArrayDump(ms.GetBuffer(), ms.Length));
+            log.Debug("Recv: \r\n" + Utils.HexDump(ms.GetBuffer(), ms.Length));
 
             ms.Position = 0;
             return new Response(ms);
         }
 
-        internal static string ByteArrayDump(byte[] buf)
-        {
-            return ByteArrayDump(buf, buf.Length);
-        }
-
-        internal static string ByteArrayDump(byte[] buf, long len)
-        {
-            return ByteArrayDump(buf, len, 16);
-        }
-
-        internal static string ByteArrayDump(byte[] buf, long len, int col)
-        {
-            return ByteArrayDump(buf, len, col, "\r\n");
-        }
-
-        internal static string ByteArrayDump(byte[] buf, long len, int col, string delim)
-        {
-            int rows = (int)Math.Ceiling(len * 1.0 / col);
-            string dump = "";
-            for (int r = 0; r < rows; r++)
-            {
-                for (int c = 0; c < col; c++)
-                {
-                    if ((r * col + c) < len)
-                        dump += buf[r * col + c].ToString("X2") + " ";
-                    else
-                        dump += "   ";
-                }
-
-                for (int c = 0; c < col; c++)
-                {
-                    if ((r * col + c) < len)
-                    {
-                        char ch = (char)buf[r * col + c];
-                        dump += Char.IsLetterOrDigit(ch) ? ch : '.';
-                    }
-                    else
-                        dump += " ";
-                }
-                dump += "\r\n";
-            }
-            return dump;
-        }
         /// <summary>
         /// Reads until a <paramref name="str"/> matched
         /// </summary>
@@ -208,7 +165,7 @@ namespace ENDA.PLCNetLib
                 log.Warning("Write attempt while disconnected, trying to reconnect");
                 Connect();
             }
-            log.Debug("Sending \r\n" + ByteArrayDump(data));
+            log.Debug("Sending \r\n" + Utils.HexDump(data));
             m_lastCmd = data;
             NetworkStream ns = m_tcp.GetStream();
 

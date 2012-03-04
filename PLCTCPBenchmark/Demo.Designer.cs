@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Demo));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.portNUD = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
@@ -48,13 +49,10 @@
             this.scanB = new System.Windows.Forms.Button();
             this.scanLB = new System.Windows.Forms.ListBox();
             this.connectP = new System.Windows.Forms.TabPage();
+            this.asyncConnectB = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.connectStatusL = new System.Windows.Forms.Label();
             this.connectB = new System.Windows.Forms.Button();
-            this.asyncConnectP = new System.Windows.Forms.TabPage();
-            this.label8 = new System.Windows.Forms.Label();
-            this.asyncConnectL = new System.Windows.Forms.Label();
-            this.asyncConnectB = new System.Windows.Forms.Button();
             this.miP = new System.Windows.Forms.TabPage();
             this.miWriteL = new System.Windows.Forms.Label();
             this.miReadL = new System.Windows.Forms.Label();
@@ -119,20 +117,22 @@
             this.stopB = new System.Windows.Forms.Button();
             this.runB = new System.Windows.Forms.Button();
             this.writeRawP = new System.Windows.Forms.TabPage();
+            this.writeRawStatusL = new System.Windows.Forms.Label();
+            this.writeRawLengthL = new System.Windows.Forms.Label();
+            this.writeRawAsyncB = new System.Windows.Forms.Button();
+            this.writeRawB = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.writeRawOffsetNUD = new System.Windows.Forms.NumericUpDown();
+            this.writeRawHB = new Be.Windows.Forms.HexBox();
             this.readP = new System.Windows.Forms.TabPage();
             this.readMultiP = new System.Windows.Forms.TabPage();
             this.Cmd = new System.Windows.Forms.TabPage();
-            this.asyncWriteRawP = new System.Windows.Forms.TabPage();
-            this.asyncReadP = new System.Windows.Forms.TabPage();
-            this.asyncReadMultiP = new System.Windows.Forms.TabPage();
-            this.asyncCmdP = new System.Windows.Forms.TabPage();
             this.logTB = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.portNUD)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.finderP.SuspendLayout();
             this.connectP.SuspendLayout();
-            this.asyncConnectP.SuspendLayout();
             this.miP.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miOffsetNUD)).BeginInit();
             this.mfP.SuspendLayout();
@@ -147,6 +147,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.qpOffsetNUD)).BeginInit();
             this.timeP.SuspendLayout();
             this.runstopP.SuspendLayout();
+            this.writeRawP.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.writeRawOffsetNUD)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -164,7 +166,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(616, 50);
+            this.groupBox1.Size = new System.Drawing.Size(708, 50);
             this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pick a PLC to work on";
@@ -238,7 +240,7 @@
             this.passTB.Name = "passTB";
             this.passTB.Size = new System.Drawing.Size(70, 20);
             this.passTB.TabIndex = 3;
-            this.passTB.Text = "4321";
+            this.passTB.Text = "1234";
             // 
             // ipTB
             // 
@@ -246,7 +248,7 @@
             this.ipTB.Name = "ipTB";
             this.ipTB.Size = new System.Drawing.Size(76, 20);
             this.ipTB.TabIndex = 2;
-            this.ipTB.Text = "78.171.95.38";
+            this.ipTB.Text = "78.171.21.182";
             // 
             // label1
             // 
@@ -271,7 +273,6 @@
             this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.tabControl1.Controls.Add(this.finderP);
             this.tabControl1.Controls.Add(this.connectP);
-            this.tabControl1.Controls.Add(this.asyncConnectP);
             this.tabControl1.Controls.Add(this.miP);
             this.tabControl1.Controls.Add(this.mfP);
             this.tabControl1.Controls.Add(this.mbP);
@@ -284,10 +285,6 @@
             this.tabControl1.Controls.Add(this.readP);
             this.tabControl1.Controls.Add(this.readMultiP);
             this.tabControl1.Controls.Add(this.Cmd);
-            this.tabControl1.Controls.Add(this.asyncWriteRawP);
-            this.tabControl1.Controls.Add(this.asyncReadP);
-            this.tabControl1.Controls.Add(this.asyncReadMultiP);
-            this.tabControl1.Controls.Add(this.asyncCmdP);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl1.ItemSize = new System.Drawing.Size(20, 100);
@@ -295,7 +292,7 @@
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(616, 575);
+            this.tabControl1.Size = new System.Drawing.Size(708, 329);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 21;
             this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
@@ -310,7 +307,7 @@
             this.finderP.Controls.Add(this.scanLB);
             this.finderP.Location = new System.Drawing.Point(104, 4);
             this.finderP.Name = "finderP";
-            this.finderP.Size = new System.Drawing.Size(508, 567);
+            this.finderP.Size = new System.Drawing.Size(596, 321);
             this.finderP.TabIndex = 18;
             this.finderP.Text = "Finder";
             this.finderP.UseVisualStyleBackColor = true;
@@ -338,7 +335,7 @@
             this.label4.AutoSize = true;
             this.label4.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.label4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label4.Location = new System.Drawing.Point(0, 541);
+            this.label4.Location = new System.Drawing.Point(0, 295);
             this.label4.MaximumSize = new System.Drawing.Size(500, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(485, 26);
@@ -376,87 +373,60 @@
             // 
             // connectP
             // 
+            this.connectP.Controls.Add(this.asyncConnectB);
             this.connectP.Controls.Add(this.label7);
             this.connectP.Controls.Add(this.connectStatusL);
             this.connectP.Controls.Add(this.connectB);
             this.connectP.Location = new System.Drawing.Point(104, 4);
             this.connectP.Name = "connectP";
-            this.connectP.Size = new System.Drawing.Size(508, 567);
+            this.connectP.Size = new System.Drawing.Size(600, 321);
             this.connectP.TabIndex = 16;
             this.connectP.Text = "Connect";
             this.connectP.UseVisualStyleBackColor = true;
             // 
+            // asyncConnectB
+            // 
+            this.asyncConnectB.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.asyncConnectB.Location = new System.Drawing.Point(300, 149);
+            this.asyncConnectB.Name = "asyncConnectB";
+            this.asyncConnectB.Size = new System.Drawing.Size(112, 23);
+            this.asyncConnectB.TabIndex = 4;
+            this.asyncConnectB.Text = "Async Connect";
+            this.asyncConnectB.UseVisualStyleBackColor = true;
+            this.asyncConnectB.Click += new System.EventHandler(this.asyncConnectB_Click);
+            // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label7.Location = new System.Drawing.Point(0, 554);
-            this.label7.MaximumSize = new System.Drawing.Size(508, 0);
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.Location = new System.Drawing.Point(0, 0);
+            this.label7.MinimumSize = new System.Drawing.Size(600, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(447, 13);
+            this.label7.Size = new System.Drawing.Size(600, 104);
             this.label7.TabIndex = 2;
-            this.label7.Text = "Connects to the selected PLC. This will freeze the GUI until connection succeeds " +
-    "or timeouts.";
+            this.label7.Text = resources.GetString("label7.Text");
             // 
             // connectStatusL
             // 
+            this.connectStatusL.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.connectStatusL.AutoSize = true;
-            this.connectStatusL.Location = new System.Drawing.Point(86, 13);
+            this.connectStatusL.Location = new System.Drawing.Point(185, 175);
+            this.connectStatusL.MinimumSize = new System.Drawing.Size(230, 0);
             this.connectStatusL.Name = "connectStatusL";
-            this.connectStatusL.Size = new System.Drawing.Size(0, 13);
+            this.connectStatusL.Size = new System.Drawing.Size(230, 13);
             this.connectStatusL.TabIndex = 1;
+            this.connectStatusL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // connectB
             // 
-            this.connectB.Location = new System.Drawing.Point(4, 8);
+            this.connectB.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.connectB.Location = new System.Drawing.Point(188, 149);
             this.connectB.Name = "connectB";
-            this.connectB.Size = new System.Drawing.Size(75, 23);
+            this.connectB.Size = new System.Drawing.Size(112, 23);
             this.connectB.TabIndex = 0;
             this.connectB.Text = "Connect";
             this.connectB.UseVisualStyleBackColor = true;
             this.connectB.Click += new System.EventHandler(this.connectB_Click);
-            // 
-            // asyncConnectP
-            // 
-            this.asyncConnectP.Controls.Add(this.label8);
-            this.asyncConnectP.Controls.Add(this.asyncConnectL);
-            this.asyncConnectP.Controls.Add(this.asyncConnectB);
-            this.asyncConnectP.Location = new System.Drawing.Point(104, 4);
-            this.asyncConnectP.Name = "asyncConnectP";
-            this.asyncConnectP.Size = new System.Drawing.Size(508, 567);
-            this.asyncConnectP.TabIndex = 17;
-            this.asyncConnectP.Text = "Async Connect";
-            this.asyncConnectP.UseVisualStyleBackColor = true;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label8.Location = new System.Drawing.Point(0, 554);
-            this.label8.MaximumSize = new System.Drawing.Size(508, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(467, 13);
-            this.label8.TabIndex = 5;
-            this.label8.Text = "Connects to the selected PLC asynchronously. During connection attempt, GUI won\'t" +
-    " be blocked.";
-            // 
-            // asyncConnectL
-            // 
-            this.asyncConnectL.AutoSize = true;
-            this.asyncConnectL.Location = new System.Drawing.Point(84, 9);
-            this.asyncConnectL.Name = "asyncConnectL";
-            this.asyncConnectL.Size = new System.Drawing.Size(0, 13);
-            this.asyncConnectL.TabIndex = 4;
-            // 
-            // asyncConnectB
-            // 
-            this.asyncConnectB.Location = new System.Drawing.Point(3, 4);
-            this.asyncConnectB.Name = "asyncConnectB";
-            this.asyncConnectB.Size = new System.Drawing.Size(75, 23);
-            this.asyncConnectB.TabIndex = 3;
-            this.asyncConnectB.Text = "Connect";
-            this.asyncConnectB.UseVisualStyleBackColor = true;
-            this.asyncConnectB.Click += new System.EventHandler(this.asyncConnectB_Click);
             // 
             // miP
             // 
@@ -471,7 +441,7 @@
             this.miP.Location = new System.Drawing.Point(104, 4);
             this.miP.Name = "miP";
             this.miP.Padding = new System.Windows.Forms.Padding(3);
-            this.miP.Size = new System.Drawing.Size(508, 567);
+            this.miP.Size = new System.Drawing.Size(596, 321);
             this.miP.TabIndex = 0;
             this.miP.Text = "MI";
             this.miP.UseVisualStyleBackColor = true;
@@ -507,6 +477,7 @@
             this.miWriteB.TabIndex = 11;
             this.miWriteB.Text = "Write";
             this.miWriteB.UseVisualStyleBackColor = true;
+            this.miWriteB.Click += new System.EventHandler(this.miWriteB_Click);
             // 
             // miReadB
             // 
@@ -516,6 +487,7 @@
             this.miReadB.TabIndex = 10;
             this.miReadB.Text = "Read";
             this.miReadB.UseVisualStyleBackColor = true;
+            this.miReadB.Click += new System.EventHandler(this.miReadB_Click);
             // 
             // label10
             // 
@@ -542,7 +514,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label9.Location = new System.Drawing.Point(3, 551);
+            this.label9.Location = new System.Drawing.Point(3, 305);
             this.label9.MaximumSize = new System.Drawing.Size(508, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(269, 13);
@@ -562,7 +534,7 @@
             this.mfP.Location = new System.Drawing.Point(104, 4);
             this.mfP.Name = "mfP";
             this.mfP.Padding = new System.Windows.Forms.Padding(3);
-            this.mfP.Size = new System.Drawing.Size(508, 567);
+            this.mfP.Size = new System.Drawing.Size(667, 567);
             this.mfP.TabIndex = 1;
             this.mfP.Text = "MF";
             this.mfP.UseVisualStyleBackColor = true;
@@ -655,7 +627,7 @@
             this.mbP.Location = new System.Drawing.Point(104, 4);
             this.mbP.Name = "mbP";
             this.mbP.Padding = new System.Windows.Forms.Padding(3);
-            this.mbP.Size = new System.Drawing.Size(508, 567);
+            this.mbP.Size = new System.Drawing.Size(667, 567);
             this.mbP.TabIndex = 2;
             this.mbP.Text = "MB";
             this.mbP.UseVisualStyleBackColor = true;
@@ -750,7 +722,7 @@
             this.mwP.Location = new System.Drawing.Point(104, 4);
             this.mwP.Name = "mwP";
             this.mwP.Padding = new System.Windows.Forms.Padding(3);
-            this.mwP.Size = new System.Drawing.Size(508, 567);
+            this.mwP.Size = new System.Drawing.Size(667, 567);
             this.mwP.TabIndex = 15;
             this.mwP.Text = "MW";
             this.mwP.UseVisualStyleBackColor = true;
@@ -840,7 +812,7 @@
             this.ipP.Location = new System.Drawing.Point(104, 4);
             this.ipP.Name = "ipP";
             this.ipP.Padding = new System.Windows.Forms.Padding(3);
-            this.ipP.Size = new System.Drawing.Size(508, 567);
+            this.ipP.Size = new System.Drawing.Size(667, 567);
             this.ipP.TabIndex = 3;
             this.ipP.Text = "IP";
             this.ipP.UseVisualStyleBackColor = true;
@@ -908,7 +880,7 @@
             this.qpP.Location = new System.Drawing.Point(104, 4);
             this.qpP.Name = "qpP";
             this.qpP.Padding = new System.Windows.Forms.Padding(3);
-            this.qpP.Size = new System.Drawing.Size(508, 567);
+            this.qpP.Size = new System.Drawing.Size(667, 567);
             this.qpP.TabIndex = 4;
             this.qpP.Text = "QP";
             this.qpP.UseVisualStyleBackColor = true;
@@ -1001,7 +973,7 @@
             this.timeP.Location = new System.Drawing.Point(104, 4);
             this.timeP.Name = "timeP";
             this.timeP.Padding = new System.Windows.Forms.Padding(3);
-            this.timeP.Size = new System.Drawing.Size(508, 567);
+            this.timeP.Size = new System.Drawing.Size(667, 567);
             this.timeP.TabIndex = 5;
             this.timeP.Text = "Time";
             this.timeP.UseVisualStyleBackColor = true;
@@ -1070,7 +1042,7 @@
             this.runstopP.Location = new System.Drawing.Point(104, 4);
             this.runstopP.Name = "runstopP";
             this.runstopP.Padding = new System.Windows.Forms.Padding(3);
-            this.runstopP.Size = new System.Drawing.Size(508, 567);
+            this.runstopP.Size = new System.Drawing.Size(667, 567);
             this.runstopP.TabIndex = 6;
             this.runstopP.Text = "Run/Stop";
             this.runstopP.UseVisualStyleBackColor = true;
@@ -1115,20 +1087,98 @@
             // 
             // writeRawP
             // 
+            this.writeRawP.Controls.Add(this.writeRawStatusL);
+            this.writeRawP.Controls.Add(this.writeRawLengthL);
+            this.writeRawP.Controls.Add(this.writeRawAsyncB);
+            this.writeRawP.Controls.Add(this.writeRawB);
+            this.writeRawP.Controls.Add(this.label14);
+            this.writeRawP.Controls.Add(this.writeRawOffsetNUD);
+            this.writeRawP.Controls.Add(this.writeRawHB);
             this.writeRawP.Location = new System.Drawing.Point(104, 4);
             this.writeRawP.Name = "writeRawP";
             this.writeRawP.Padding = new System.Windows.Forms.Padding(3);
-            this.writeRawP.Size = new System.Drawing.Size(508, 567);
+            this.writeRawP.Size = new System.Drawing.Size(596, 321);
             this.writeRawP.TabIndex = 7;
             this.writeRawP.Text = "WriteRaw";
             this.writeRawP.UseVisualStyleBackColor = true;
+            // 
+            // writeRawStatusL
+            // 
+            this.writeRawStatusL.AutoSize = true;
+            this.writeRawStatusL.Location = new System.Drawing.Point(280, 12);
+            this.writeRawStatusL.Name = "writeRawStatusL";
+            this.writeRawStatusL.Size = new System.Drawing.Size(41, 13);
+            this.writeRawStatusL.TabIndex = 7;
+            this.writeRawStatusL.Text = "label20";
+            // 
+            // writeRawLengthL
+            // 
+            this.writeRawLengthL.AutoSize = true;
+            this.writeRawLengthL.Location = new System.Drawing.Point(142, 12);
+            this.writeRawLengthL.Name = "writeRawLengthL";
+            this.writeRawLengthL.Size = new System.Drawing.Size(43, 13);
+            this.writeRawLengthL.TabIndex = 6;
+            this.writeRawLengthL.Text = "Length:";
+            // 
+            // writeRawAsyncB
+            // 
+            this.writeRawAsyncB.Location = new System.Drawing.Point(586, 7);
+            this.writeRawAsyncB.Name = "writeRawAsyncB";
+            this.writeRawAsyncB.Size = new System.Drawing.Size(75, 23);
+            this.writeRawAsyncB.TabIndex = 5;
+            this.writeRawAsyncB.Text = "Async Write";
+            this.writeRawAsyncB.UseVisualStyleBackColor = true;
+            // 
+            // writeRawB
+            // 
+            this.writeRawB.Location = new System.Drawing.Point(505, 7);
+            this.writeRawB.Name = "writeRawB";
+            this.writeRawB.Size = new System.Drawing.Size(75, 23);
+            this.writeRawB.TabIndex = 4;
+            this.writeRawB.Text = "Write";
+            this.writeRawB.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(7, 12);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(38, 13);
+            this.label14.TabIndex = 3;
+            this.label14.Text = "Offset:";
+            // 
+            // writeRawOffsetNUD
+            // 
+            this.writeRawOffsetNUD.Location = new System.Drawing.Point(53, 8);
+            this.writeRawOffsetNUD.Maximum = new decimal(new int[] {
+            31744,
+            0,
+            0,
+            0});
+            this.writeRawOffsetNUD.Name = "writeRawOffsetNUD";
+            this.writeRawOffsetNUD.Size = new System.Drawing.Size(83, 20);
+            this.writeRawOffsetNUD.TabIndex = 1;
+            this.writeRawOffsetNUD.ValueChanged += new System.EventHandler(this.writeRawOffsetNUD_ValueChanged);
+            // 
+            // writeRawHB
+            // 
+            this.writeRawHB.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.writeRawHB.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.writeRawHB.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.writeRawHB.Location = new System.Drawing.Point(3, 36);
+            this.writeRawHB.Name = "writeRawHB";
+            this.writeRawHB.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.writeRawHB.Size = new System.Drawing.Size(590, 282);
+            this.writeRawHB.TabIndex = 0;
             // 
             // readP
             // 
             this.readP.Location = new System.Drawing.Point(104, 4);
             this.readP.Name = "readP";
             this.readP.Padding = new System.Windows.Forms.Padding(3);
-            this.readP.Size = new System.Drawing.Size(508, 567);
+            this.readP.Size = new System.Drawing.Size(667, 567);
             this.readP.TabIndex = 8;
             this.readP.Text = "Read";
             this.readP.UseVisualStyleBackColor = true;
@@ -1138,7 +1188,7 @@
             this.readMultiP.Location = new System.Drawing.Point(104, 4);
             this.readMultiP.Name = "readMultiP";
             this.readMultiP.Padding = new System.Windows.Forms.Padding(3);
-            this.readMultiP.Size = new System.Drawing.Size(508, 567);
+            this.readMultiP.Size = new System.Drawing.Size(667, 567);
             this.readMultiP.TabIndex = 9;
             this.readMultiP.Text = "ReadMulti";
             this.readMultiP.UseVisualStyleBackColor = true;
@@ -1148,71 +1198,31 @@
             this.Cmd.Location = new System.Drawing.Point(104, 4);
             this.Cmd.Name = "Cmd";
             this.Cmd.Padding = new System.Windows.Forms.Padding(3);
-            this.Cmd.Size = new System.Drawing.Size(508, 567);
+            this.Cmd.Size = new System.Drawing.Size(667, 567);
             this.Cmd.TabIndex = 10;
             this.Cmd.Text = "Cmd";
             this.Cmd.UseVisualStyleBackColor = true;
-            // 
-            // asyncWriteRawP
-            // 
-            this.asyncWriteRawP.Location = new System.Drawing.Point(104, 4);
-            this.asyncWriteRawP.Name = "asyncWriteRawP";
-            this.asyncWriteRawP.Padding = new System.Windows.Forms.Padding(3);
-            this.asyncWriteRawP.Size = new System.Drawing.Size(508, 567);
-            this.asyncWriteRawP.TabIndex = 11;
-            this.asyncWriteRawP.Text = "Async WriteRaw";
-            this.asyncWriteRawP.UseVisualStyleBackColor = true;
-            // 
-            // asyncReadP
-            // 
-            this.asyncReadP.Location = new System.Drawing.Point(104, 4);
-            this.asyncReadP.Name = "asyncReadP";
-            this.asyncReadP.Padding = new System.Windows.Forms.Padding(3);
-            this.asyncReadP.Size = new System.Drawing.Size(508, 567);
-            this.asyncReadP.TabIndex = 12;
-            this.asyncReadP.Text = "Async Read";
-            this.asyncReadP.UseVisualStyleBackColor = true;
-            // 
-            // asyncReadMultiP
-            // 
-            this.asyncReadMultiP.Location = new System.Drawing.Point(104, 4);
-            this.asyncReadMultiP.Name = "asyncReadMultiP";
-            this.asyncReadMultiP.Padding = new System.Windows.Forms.Padding(3);
-            this.asyncReadMultiP.Size = new System.Drawing.Size(508, 567);
-            this.asyncReadMultiP.TabIndex = 13;
-            this.asyncReadMultiP.Text = "Async ReadMulti";
-            this.asyncReadMultiP.UseVisualStyleBackColor = true;
-            // 
-            // asyncCmdP
-            // 
-            this.asyncCmdP.Location = new System.Drawing.Point(104, 4);
-            this.asyncCmdP.Name = "asyncCmdP";
-            this.asyncCmdP.Padding = new System.Windows.Forms.Padding(3);
-            this.asyncCmdP.Size = new System.Drawing.Size(508, 567);
-            this.asyncCmdP.TabIndex = 14;
-            this.asyncCmdP.Text = "Async Cmd";
-            this.asyncCmdP.UseVisualStyleBackColor = true;
             // 
             // logTB
             // 
             this.logTB.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.logTB.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.logTB.Location = new System.Drawing.Point(0, 625);
+            this.logTB.Location = new System.Drawing.Point(0, 379);
             this.logTB.Multiline = true;
             this.logTB.Name = "logTB";
             this.logTB.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTB.Size = new System.Drawing.Size(616, 83);
+            this.logTB.Size = new System.Drawing.Size(708, 83);
             this.logTB.TabIndex = 0;
             // 
             // Demo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(616, 708);
+            this.ClientSize = new System.Drawing.Size(708, 462);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.logTB);
             this.Controls.Add(this.groupBox1);
-            this.MinimumSize = new System.Drawing.Size(632, 746);
+            this.MinimumSize = new System.Drawing.Size(720, 500);
             this.Name = "Demo";
             this.Text = "Demo";
             this.groupBox1.ResumeLayout(false);
@@ -1223,8 +1233,6 @@
             this.finderP.PerformLayout();
             this.connectP.ResumeLayout(false);
             this.connectP.PerformLayout();
-            this.asyncConnectP.ResumeLayout(false);
-            this.asyncConnectP.PerformLayout();
             this.miP.ResumeLayout(false);
             this.miP.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miOffsetNUD)).EndInit();
@@ -1247,6 +1255,9 @@
             this.timeP.PerformLayout();
             this.runstopP.ResumeLayout(false);
             this.runstopP.PerformLayout();
+            this.writeRawP.ResumeLayout(false);
+            this.writeRawP.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.writeRawOffsetNUD)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1263,17 +1274,11 @@
         private System.Windows.Forms.TabPage qpP;
         private System.Windows.Forms.TabPage timeP;
         private System.Windows.Forms.TabPage runstopP;
-        private System.Windows.Forms.TabPage writeRawP;
         private System.Windows.Forms.TabPage readP;
         private System.Windows.Forms.TabPage readMultiP;
         private System.Windows.Forms.TabPage Cmd;
-        private System.Windows.Forms.TabPage asyncWriteRawP;
-        private System.Windows.Forms.TabPage asyncReadP;
-        private System.Windows.Forms.TabPage asyncReadMultiP;
-        private System.Windows.Forms.TabPage asyncCmdP;
         private System.Windows.Forms.TabPage mwP;
         private System.Windows.Forms.TabPage connectP;
-        private System.Windows.Forms.TabPage asyncConnectP;
         private System.Windows.Forms.TabPage finderP;
         private System.Windows.Forms.TextBox logTB;
         private System.Windows.Forms.Label label1;
@@ -1295,9 +1300,6 @@
         private System.Windows.Forms.Button connectB;
         private System.Windows.Forms.Label connectStatusL;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label asyncConnectL;
-        private System.Windows.Forms.Button asyncConnectB;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label mfReadL;
         private System.Windows.Forms.TextBox mfWriteTB;
@@ -1353,5 +1355,14 @@
         private System.Windows.Forms.Label runL;
         private System.Windows.Forms.Button stopB;
         private System.Windows.Forms.Button runB;
+        private System.Windows.Forms.TabPage writeRawP;
+        private Be.Windows.Forms.HexBox writeRawHB;
+        private System.Windows.Forms.NumericUpDown writeRawOffsetNUD;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button writeRawAsyncB;
+        private System.Windows.Forms.Button writeRawB;
+        private System.Windows.Forms.Label writeRawStatusL;
+        private System.Windows.Forms.Label writeRawLengthL;
+        private System.Windows.Forms.Button asyncConnectB;
     }
 }

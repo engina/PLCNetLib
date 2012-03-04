@@ -117,4 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label7.Text" xml:space="preserve">
+    <value>Connects to the selected PLC.
+
+Connect button does this in a blocking fashion, as in your GUI will block (freeze) during the connect operation. You can test this by unplugging your PLC from network and clicking this button. Whole GUI will freeze until the connection operation times out.
+
+Async Connect button does the same operation as Connect button, but in a non-blocking way, the GUI will be responsive regardless of the connect operation.</value>
+  </data>
 </root>
