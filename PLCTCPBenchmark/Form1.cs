@@ -91,7 +91,7 @@ namespace PLCTCPBenchmark
         {
             AsyncResult a = (AsyncResult)ar;
             PLC p = (PLC)a.AsyncState;
-            p.EndWriteRaw(ar);
+            p.EndWrite(ar);
         }
 
         private void massWriteB_Click(object sender, EventArgs e)

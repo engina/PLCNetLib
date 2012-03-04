@@ -116,18 +116,25 @@
             this.runL = new System.Windows.Forms.Label();
             this.stopB = new System.Windows.Forms.Button();
             this.runB = new System.Windows.Forms.Button();
-            this.writeRawP = new System.Windows.Forms.TabPage();
-            this.writeRawStatusL = new System.Windows.Forms.Label();
-            this.writeRawLengthL = new System.Windows.Forms.Label();
-            this.writeRawAsyncB = new System.Windows.Forms.Button();
-            this.writeRawB = new System.Windows.Forms.Button();
+            this.readWriteP = new System.Windows.Forms.TabPage();
+            this.rwStatusL = new System.Windows.Forms.Label();
+            this.writeLengthL = new System.Windows.Forms.Label();
+            this.writeAsyncB = new System.Windows.Forms.Button();
+            this.writeB = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
-            this.writeRawOffsetNUD = new System.Windows.Forms.NumericUpDown();
-            this.writeRawHB = new Be.Windows.Forms.HexBox();
-            this.readP = new System.Windows.Forms.TabPage();
+            this.rwOffsetNUD = new System.Windows.Forms.NumericUpDown();
+            this.rwHB = new Be.Windows.Forms.HexBox();
             this.readMultiP = new System.Windows.Forms.TabPage();
             this.Cmd = new System.Windows.Forms.TabPage();
             this.logTB = new System.Windows.Forms.TextBox();
+            this.helpRTB = new System.Windows.Forms.RichTextBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.readB = new System.Windows.Forms.Button();
+            this.readAsyncB = new System.Windows.Forms.Button();
+            this.rwLenNUD = new System.Windows.Forms.NumericUpDown();
+            this.cmdTB = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.cmdRespTB = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.portNUD)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -147,8 +154,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.qpOffsetNUD)).BeginInit();
             this.timeP.SuspendLayout();
             this.runstopP.SuspendLayout();
-            this.writeRawP.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.writeRawOffsetNUD)).BeginInit();
+            this.readWriteP.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rwOffsetNUD)).BeginInit();
+            this.Cmd.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rwLenNUD)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -166,7 +179,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(708, 50);
+            this.groupBox1.Size = new System.Drawing.Size(932, 50);
             this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pick a PLC to work on";
@@ -281,21 +294,21 @@
             this.tabControl1.Controls.Add(this.qpP);
             this.tabControl1.Controls.Add(this.timeP);
             this.tabControl1.Controls.Add(this.runstopP);
-            this.tabControl1.Controls.Add(this.writeRawP);
-            this.tabControl1.Controls.Add(this.readP);
+            this.tabControl1.Controls.Add(this.readWriteP);
             this.tabControl1.Controls.Add(this.readMultiP);
             this.tabControl1.Controls.Add(this.Cmd);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl1.ItemSize = new System.Drawing.Size(20, 100);
-            this.tabControl1.Location = new System.Drawing.Point(0, 50);
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(708, 329);
+            this.tabControl1.Size = new System.Drawing.Size(784, 329);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 21;
             this.tabControl1.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl1_DrawItem);
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // finderP
             // 
@@ -307,7 +320,7 @@
             this.finderP.Controls.Add(this.scanLB);
             this.finderP.Location = new System.Drawing.Point(104, 4);
             this.finderP.Name = "finderP";
-            this.finderP.Size = new System.Drawing.Size(596, 321);
+            this.finderP.Size = new System.Drawing.Size(676, 321);
             this.finderP.TabIndex = 18;
             this.finderP.Text = "Finder";
             this.finderP.UseVisualStyleBackColor = true;
@@ -379,7 +392,7 @@
             this.connectP.Controls.Add(this.connectB);
             this.connectP.Location = new System.Drawing.Point(104, 4);
             this.connectP.Name = "connectP";
-            this.connectP.Size = new System.Drawing.Size(600, 321);
+            this.connectP.Size = new System.Drawing.Size(676, 321);
             this.connectP.TabIndex = 16;
             this.connectP.Text = "Connect";
             this.connectP.UseVisualStyleBackColor = true;
@@ -387,7 +400,7 @@
             // asyncConnectB
             // 
             this.asyncConnectB.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.asyncConnectB.Location = new System.Drawing.Point(300, 149);
+            this.asyncConnectB.Location = new System.Drawing.Point(271, 149);
             this.asyncConnectB.Name = "asyncConnectB";
             this.asyncConnectB.Size = new System.Drawing.Size(112, 23);
             this.asyncConnectB.TabIndex = 4;
@@ -410,7 +423,7 @@
             // 
             this.connectStatusL.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.connectStatusL.AutoSize = true;
-            this.connectStatusL.Location = new System.Drawing.Point(185, 175);
+            this.connectStatusL.Location = new System.Drawing.Point(156, 175);
             this.connectStatusL.MinimumSize = new System.Drawing.Size(230, 0);
             this.connectStatusL.Name = "connectStatusL";
             this.connectStatusL.Size = new System.Drawing.Size(230, 13);
@@ -420,7 +433,7 @@
             // connectB
             // 
             this.connectB.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.connectB.Location = new System.Drawing.Point(188, 149);
+            this.connectB.Location = new System.Drawing.Point(159, 149);
             this.connectB.Name = "connectB";
             this.connectB.Size = new System.Drawing.Size(112, 23);
             this.connectB.TabIndex = 0;
@@ -441,7 +454,7 @@
             this.miP.Location = new System.Drawing.Point(104, 4);
             this.miP.Name = "miP";
             this.miP.Padding = new System.Windows.Forms.Padding(3);
-            this.miP.Size = new System.Drawing.Size(596, 321);
+            this.miP.Size = new System.Drawing.Size(676, 321);
             this.miP.TabIndex = 0;
             this.miP.Text = "MI";
             this.miP.UseVisualStyleBackColor = true;
@@ -534,7 +547,7 @@
             this.mfP.Location = new System.Drawing.Point(104, 4);
             this.mfP.Name = "mfP";
             this.mfP.Padding = new System.Windows.Forms.Padding(3);
-            this.mfP.Size = new System.Drawing.Size(667, 567);
+            this.mfP.Size = new System.Drawing.Size(676, 321);
             this.mfP.TabIndex = 1;
             this.mfP.Text = "MF";
             this.mfP.UseVisualStyleBackColor = true;
@@ -607,7 +620,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label13.Location = new System.Drawing.Point(3, 551);
+            this.label13.Location = new System.Drawing.Point(3, 305);
             this.label13.MaximumSize = new System.Drawing.Size(508, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(272, 13);
@@ -627,7 +640,7 @@
             this.mbP.Location = new System.Drawing.Point(104, 4);
             this.mbP.Name = "mbP";
             this.mbP.Padding = new System.Windows.Forms.Padding(3);
-            this.mbP.Size = new System.Drawing.Size(667, 567);
+            this.mbP.Size = new System.Drawing.Size(676, 321);
             this.mbP.TabIndex = 2;
             this.mbP.Text = "MB";
             this.mbP.UseVisualStyleBackColor = true;
@@ -702,7 +715,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label16.Location = new System.Drawing.Point(3, 551);
+            this.label16.Location = new System.Drawing.Point(3, 305);
             this.label16.MaximumSize = new System.Drawing.Size(508, 0);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(273, 13);
@@ -722,7 +735,7 @@
             this.mwP.Location = new System.Drawing.Point(104, 4);
             this.mwP.Name = "mwP";
             this.mwP.Padding = new System.Windows.Forms.Padding(3);
-            this.mwP.Size = new System.Drawing.Size(667, 567);
+            this.mwP.Size = new System.Drawing.Size(676, 321);
             this.mwP.TabIndex = 15;
             this.mwP.Text = "MW";
             this.mwP.UseVisualStyleBackColor = true;
@@ -795,7 +808,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label19.Location = new System.Drawing.Point(3, 551);
+            this.label19.Location = new System.Drawing.Point(3, 305);
             this.label19.MaximumSize = new System.Drawing.Size(508, 0);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(277, 13);
@@ -812,7 +825,7 @@
             this.ipP.Location = new System.Drawing.Point(104, 4);
             this.ipP.Name = "ipP";
             this.ipP.Padding = new System.Windows.Forms.Padding(3);
-            this.ipP.Size = new System.Drawing.Size(667, 567);
+            this.ipP.Size = new System.Drawing.Size(676, 321);
             this.ipP.TabIndex = 3;
             this.ipP.Text = "IP";
             this.ipP.UseVisualStyleBackColor = true;
@@ -860,7 +873,7 @@
             // 
             this.label22.AutoSize = true;
             this.label22.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label22.Location = new System.Drawing.Point(3, 551);
+            this.label22.Location = new System.Drawing.Point(3, 305);
             this.label22.MaximumSize = new System.Drawing.Size(508, 0);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(223, 13);
@@ -880,7 +893,7 @@
             this.qpP.Location = new System.Drawing.Point(104, 4);
             this.qpP.Name = "qpP";
             this.qpP.Padding = new System.Windows.Forms.Padding(3);
-            this.qpP.Size = new System.Drawing.Size(667, 567);
+            this.qpP.Size = new System.Drawing.Size(676, 321);
             this.qpP.TabIndex = 4;
             this.qpP.Text = "QP";
             this.qpP.UseVisualStyleBackColor = true;
@@ -955,7 +968,7 @@
             // 
             this.label25.AutoSize = true;
             this.label25.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label25.Location = new System.Drawing.Point(3, 551);
+            this.label25.Location = new System.Drawing.Point(3, 305);
             this.label25.MaximumSize = new System.Drawing.Size(508, 0);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(259, 13);
@@ -973,7 +986,7 @@
             this.timeP.Location = new System.Drawing.Point(104, 4);
             this.timeP.Name = "timeP";
             this.timeP.Padding = new System.Windows.Forms.Padding(3);
-            this.timeP.Size = new System.Drawing.Size(667, 567);
+            this.timeP.Size = new System.Drawing.Size(676, 321);
             this.timeP.TabIndex = 5;
             this.timeP.Text = "Time";
             this.timeP.UseVisualStyleBackColor = true;
@@ -982,7 +995,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label11.Location = new System.Drawing.Point(3, 551);
+            this.label11.Location = new System.Drawing.Point(3, 305);
             this.label11.MaximumSize = new System.Drawing.Size(508, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(417, 13);
@@ -1029,6 +1042,8 @@
             // timeWriteDTP
             // 
             this.timeWriteDTP.Location = new System.Drawing.Point(99, 50);
+            this.timeWriteDTP.MaxDate = new System.DateTime(2099, 12, 31, 0, 0, 0, 0);
+            this.timeWriteDTP.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             this.timeWriteDTP.Name = "timeWriteDTP";
             this.timeWriteDTP.Size = new System.Drawing.Size(200, 20);
             this.timeWriteDTP.TabIndex = 0;
@@ -1042,7 +1057,7 @@
             this.runstopP.Location = new System.Drawing.Point(104, 4);
             this.runstopP.Name = "runstopP";
             this.runstopP.Padding = new System.Windows.Forms.Padding(3);
-            this.runstopP.Size = new System.Drawing.Size(667, 567);
+            this.runstopP.Size = new System.Drawing.Size(676, 321);
             this.runstopP.TabIndex = 6;
             this.runstopP.Text = "Run/Stop";
             this.runstopP.UseVisualStyleBackColor = true;
@@ -1085,58 +1100,63 @@
             this.runB.UseVisualStyleBackColor = true;
             this.runB.Click += new System.EventHandler(this.runB_Click);
             // 
-            // writeRawP
+            // readWriteP
             // 
-            this.writeRawP.Controls.Add(this.writeRawStatusL);
-            this.writeRawP.Controls.Add(this.writeRawLengthL);
-            this.writeRawP.Controls.Add(this.writeRawAsyncB);
-            this.writeRawP.Controls.Add(this.writeRawB);
-            this.writeRawP.Controls.Add(this.label14);
-            this.writeRawP.Controls.Add(this.writeRawOffsetNUD);
-            this.writeRawP.Controls.Add(this.writeRawHB);
-            this.writeRawP.Location = new System.Drawing.Point(104, 4);
-            this.writeRawP.Name = "writeRawP";
-            this.writeRawP.Padding = new System.Windows.Forms.Padding(3);
-            this.writeRawP.Size = new System.Drawing.Size(596, 321);
-            this.writeRawP.TabIndex = 7;
-            this.writeRawP.Text = "WriteRaw";
-            this.writeRawP.UseVisualStyleBackColor = true;
+            this.readWriteP.Controls.Add(this.rwLenNUD);
+            this.readWriteP.Controls.Add(this.readAsyncB);
+            this.readWriteP.Controls.Add(this.readB);
+            this.readWriteP.Controls.Add(this.rwStatusL);
+            this.readWriteP.Controls.Add(this.writeLengthL);
+            this.readWriteP.Controls.Add(this.writeAsyncB);
+            this.readWriteP.Controls.Add(this.writeB);
+            this.readWriteP.Controls.Add(this.label14);
+            this.readWriteP.Controls.Add(this.rwOffsetNUD);
+            this.readWriteP.Controls.Add(this.rwHB);
+            this.readWriteP.Location = new System.Drawing.Point(104, 4);
+            this.readWriteP.Name = "readWriteP";
+            this.readWriteP.Padding = new System.Windows.Forms.Padding(3);
+            this.readWriteP.Size = new System.Drawing.Size(676, 321);
+            this.readWriteP.TabIndex = 7;
+            this.readWriteP.Text = "Read/Write";
+            this.readWriteP.UseVisualStyleBackColor = true;
             // 
-            // writeRawStatusL
+            // rwStatusL
             // 
-            this.writeRawStatusL.AutoSize = true;
-            this.writeRawStatusL.Location = new System.Drawing.Point(280, 12);
-            this.writeRawStatusL.Name = "writeRawStatusL";
-            this.writeRawStatusL.Size = new System.Drawing.Size(41, 13);
-            this.writeRawStatusL.TabIndex = 7;
-            this.writeRawStatusL.Text = "label20";
+            this.rwStatusL.AutoSize = true;
+            this.rwStatusL.Location = new System.Drawing.Point(249, 12);
+            this.rwStatusL.Name = "rwStatusL";
+            this.rwStatusL.Size = new System.Drawing.Size(41, 13);
+            this.rwStatusL.TabIndex = 7;
+            this.rwStatusL.Text = "label20";
             // 
-            // writeRawLengthL
+            // writeLengthL
             // 
-            this.writeRawLengthL.AutoSize = true;
-            this.writeRawLengthL.Location = new System.Drawing.Point(142, 12);
-            this.writeRawLengthL.Name = "writeRawLengthL";
-            this.writeRawLengthL.Size = new System.Drawing.Size(43, 13);
-            this.writeRawLengthL.TabIndex = 6;
-            this.writeRawLengthL.Text = "Length:";
+            this.writeLengthL.AutoSize = true;
+            this.writeLengthL.Location = new System.Drawing.Point(108, 12);
+            this.writeLengthL.Name = "writeLengthL";
+            this.writeLengthL.Size = new System.Drawing.Size(43, 13);
+            this.writeLengthL.TabIndex = 6;
+            this.writeLengthL.Text = "Length:";
             // 
-            // writeRawAsyncB
+            // writeAsyncB
             // 
-            this.writeRawAsyncB.Location = new System.Drawing.Point(586, 7);
-            this.writeRawAsyncB.Name = "writeRawAsyncB";
-            this.writeRawAsyncB.Size = new System.Drawing.Size(75, 23);
-            this.writeRawAsyncB.TabIndex = 5;
-            this.writeRawAsyncB.Text = "Async Write";
-            this.writeRawAsyncB.UseVisualStyleBackColor = true;
+            this.writeAsyncB.Location = new System.Drawing.Point(586, 7);
+            this.writeAsyncB.Name = "writeAsyncB";
+            this.writeAsyncB.Size = new System.Drawing.Size(75, 23);
+            this.writeAsyncB.TabIndex = 5;
+            this.writeAsyncB.Text = "Async Write";
+            this.writeAsyncB.UseVisualStyleBackColor = true;
+            this.writeAsyncB.Click += new System.EventHandler(this.writeAsyncB_Click);
             // 
-            // writeRawB
+            // writeB
             // 
-            this.writeRawB.Location = new System.Drawing.Point(505, 7);
-            this.writeRawB.Name = "writeRawB";
-            this.writeRawB.Size = new System.Drawing.Size(75, 23);
-            this.writeRawB.TabIndex = 4;
-            this.writeRawB.Text = "Write";
-            this.writeRawB.UseVisualStyleBackColor = true;
+            this.writeB.Location = new System.Drawing.Point(505, 7);
+            this.writeB.Name = "writeB";
+            this.writeB.Size = new System.Drawing.Size(75, 23);
+            this.writeB.TabIndex = 4;
+            this.writeB.Text = "Write";
+            this.writeB.UseVisualStyleBackColor = true;
+            this.writeB.Click += new System.EventHandler(this.writeRawB_Click);
             // 
             // label14
             // 
@@ -1147,58 +1167,51 @@
             this.label14.TabIndex = 3;
             this.label14.Text = "Offset:";
             // 
-            // writeRawOffsetNUD
+            // rwOffsetNUD
             // 
-            this.writeRawOffsetNUD.Location = new System.Drawing.Point(53, 8);
-            this.writeRawOffsetNUD.Maximum = new decimal(new int[] {
+            this.rwOffsetNUD.Location = new System.Drawing.Point(51, 8);
+            this.rwOffsetNUD.Maximum = new decimal(new int[] {
             31744,
             0,
             0,
             0});
-            this.writeRawOffsetNUD.Name = "writeRawOffsetNUD";
-            this.writeRawOffsetNUD.Size = new System.Drawing.Size(83, 20);
-            this.writeRawOffsetNUD.TabIndex = 1;
-            this.writeRawOffsetNUD.ValueChanged += new System.EventHandler(this.writeRawOffsetNUD_ValueChanged);
+            this.rwOffsetNUD.Name = "rwOffsetNUD";
+            this.rwOffsetNUD.Size = new System.Drawing.Size(51, 20);
+            this.rwOffsetNUD.TabIndex = 1;
+            this.rwOffsetNUD.ValueChanged += new System.EventHandler(this.writeRawOffsetNUD_ValueChanged);
             // 
-            // writeRawHB
+            // rwHB
             // 
-            this.writeRawHB.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.rwHB.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.writeRawHB.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.writeRawHB.LineInfoForeColor = System.Drawing.Color.Empty;
-            this.writeRawHB.Location = new System.Drawing.Point(3, 36);
-            this.writeRawHB.Name = "writeRawHB";
-            this.writeRawHB.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
-            this.writeRawHB.Size = new System.Drawing.Size(590, 282);
-            this.writeRawHB.TabIndex = 0;
-            // 
-            // readP
-            // 
-            this.readP.Location = new System.Drawing.Point(104, 4);
-            this.readP.Name = "readP";
-            this.readP.Padding = new System.Windows.Forms.Padding(3);
-            this.readP.Size = new System.Drawing.Size(667, 567);
-            this.readP.TabIndex = 8;
-            this.readP.Text = "Read";
-            this.readP.UseVisualStyleBackColor = true;
+            this.rwHB.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rwHB.LineInfoForeColor = System.Drawing.Color.Empty;
+            this.rwHB.Location = new System.Drawing.Point(3, 36);
+            this.rwHB.Name = "rwHB";
+            this.rwHB.ShadowSelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(60)))), ((int)(((byte)(188)))), ((int)(((byte)(255)))));
+            this.rwHB.Size = new System.Drawing.Size(670, 282);
+            this.rwHB.TabIndex = 0;
             // 
             // readMultiP
             // 
             this.readMultiP.Location = new System.Drawing.Point(104, 4);
             this.readMultiP.Name = "readMultiP";
             this.readMultiP.Padding = new System.Windows.Forms.Padding(3);
-            this.readMultiP.Size = new System.Drawing.Size(667, 567);
+            this.readMultiP.Size = new System.Drawing.Size(676, 321);
             this.readMultiP.TabIndex = 9;
             this.readMultiP.Text = "ReadMulti";
             this.readMultiP.UseVisualStyleBackColor = true;
             // 
             // Cmd
             // 
+            this.Cmd.Controls.Add(this.cmdRespTB);
+            this.Cmd.Controls.Add(this.label8);
+            this.Cmd.Controls.Add(this.cmdTB);
             this.Cmd.Location = new System.Drawing.Point(104, 4);
             this.Cmd.Name = "Cmd";
             this.Cmd.Padding = new System.Windows.Forms.Padding(3);
-            this.Cmd.Size = new System.Drawing.Size(667, 567);
+            this.Cmd.Size = new System.Drawing.Size(676, 321);
             this.Cmd.TabIndex = 10;
             this.Cmd.Text = "Cmd";
             this.Cmd.UseVisualStyleBackColor = true;
@@ -1211,18 +1224,112 @@
             this.logTB.Multiline = true;
             this.logTB.Name = "logTB";
             this.logTB.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTB.Size = new System.Drawing.Size(708, 83);
+            this.logTB.Size = new System.Drawing.Size(932, 83);
             this.logTB.TabIndex = 0;
+            // 
+            // helpRTB
+            // 
+            this.helpRTB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.helpRTB.Location = new System.Drawing.Point(0, 0);
+            this.helpRTB.Name = "helpRTB";
+            this.helpRTB.Size = new System.Drawing.Size(144, 329);
+            this.helpRTB.TabIndex = 8;
+            this.helpRTB.Text = "";
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 50);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.tabControl1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.helpRTB);
+            this.splitContainer1.Size = new System.Drawing.Size(932, 329);
+            this.splitContainer1.SplitterDistance = 784;
+            this.splitContainer1.TabIndex = 22;
+            // 
+            // readB
+            // 
+            this.readB.Location = new System.Drawing.Point(347, 7);
+            this.readB.Name = "readB";
+            this.readB.Size = new System.Drawing.Size(75, 23);
+            this.readB.TabIndex = 8;
+            this.readB.Text = "Read";
+            this.readB.UseVisualStyleBackColor = true;
+            this.readB.Click += new System.EventHandler(this.readB_Click);
+            // 
+            // readAsyncB
+            // 
+            this.readAsyncB.Location = new System.Drawing.Point(424, 7);
+            this.readAsyncB.Name = "readAsyncB";
+            this.readAsyncB.Size = new System.Drawing.Size(75, 23);
+            this.readAsyncB.TabIndex = 9;
+            this.readAsyncB.Text = "Async Read";
+            this.readAsyncB.UseVisualStyleBackColor = true;
+            this.readAsyncB.Click += new System.EventHandler(this.readAsyncB_Click);
+            // 
+            // rwLenNUD
+            // 
+            this.rwLenNUD.Location = new System.Drawing.Point(157, 8);
+            this.rwLenNUD.Maximum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+            this.rwLenNUD.Name = "rwLenNUD";
+            this.rwLenNUD.Size = new System.Drawing.Size(50, 20);
+            this.rwLenNUD.TabIndex = 10;
+            this.rwLenNUD.Value = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+            // 
+            // cmdTB
+            // 
+            this.cmdTB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdTB.Location = new System.Drawing.Point(44, 4);
+            this.cmdTB.Name = "cmdTB";
+            this.cmdTB.Size = new System.Drawing.Size(626, 20);
+            this.cmdTB.TabIndex = 0;
+            this.cmdTB.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cmdTB_KeyUp);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(7, 7);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(31, 13);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "Cmd:";
+            // 
+            // cmdRespTB
+            // 
+            this.cmdRespTB.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdRespTB.Location = new System.Drawing.Point(3, 30);
+            this.cmdRespTB.Multiline = true;
+            this.cmdRespTB.Name = "cmdRespTB";
+            this.cmdRespTB.ReadOnly = true;
+            this.cmdRespTB.Size = new System.Drawing.Size(667, 288);
+            this.cmdRespTB.TabIndex = 2;
             // 
             // Demo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(708, 462);
-            this.Controls.Add(this.tabControl1);
+            this.ClientSize = new System.Drawing.Size(932, 462);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.logTB);
             this.Controls.Add(this.groupBox1);
-            this.MinimumSize = new System.Drawing.Size(720, 500);
+            this.MinimumSize = new System.Drawing.Size(948, 500);
             this.Name = "Demo";
             this.Text = "Demo";
             this.groupBox1.ResumeLayout(false);
@@ -1255,9 +1362,16 @@
             this.timeP.PerformLayout();
             this.runstopP.ResumeLayout(false);
             this.runstopP.PerformLayout();
-            this.writeRawP.ResumeLayout(false);
-            this.writeRawP.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.writeRawOffsetNUD)).EndInit();
+            this.readWriteP.ResumeLayout(false);
+            this.readWriteP.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.rwOffsetNUD)).EndInit();
+            this.Cmd.ResumeLayout(false);
+            this.Cmd.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.rwLenNUD)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1274,7 +1388,6 @@
         private System.Windows.Forms.TabPage qpP;
         private System.Windows.Forms.TabPage timeP;
         private System.Windows.Forms.TabPage runstopP;
-        private System.Windows.Forms.TabPage readP;
         private System.Windows.Forms.TabPage readMultiP;
         private System.Windows.Forms.TabPage Cmd;
         private System.Windows.Forms.TabPage mwP;
@@ -1355,14 +1468,22 @@
         private System.Windows.Forms.Label runL;
         private System.Windows.Forms.Button stopB;
         private System.Windows.Forms.Button runB;
-        private System.Windows.Forms.TabPage writeRawP;
-        private Be.Windows.Forms.HexBox writeRawHB;
-        private System.Windows.Forms.NumericUpDown writeRawOffsetNUD;
+        private System.Windows.Forms.TabPage readWriteP;
+        private Be.Windows.Forms.HexBox rwHB;
+        private System.Windows.Forms.NumericUpDown rwOffsetNUD;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Button writeRawAsyncB;
-        private System.Windows.Forms.Button writeRawB;
-        private System.Windows.Forms.Label writeRawStatusL;
-        private System.Windows.Forms.Label writeRawLengthL;
+        private System.Windows.Forms.Button writeAsyncB;
+        private System.Windows.Forms.Button writeB;
+        private System.Windows.Forms.Label rwStatusL;
+        private System.Windows.Forms.Label writeLengthL;
         private System.Windows.Forms.Button asyncConnectB;
+        private System.Windows.Forms.RichTextBox helpRTB;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Button readB;
+        private System.Windows.Forms.Button readAsyncB;
+        private System.Windows.Forms.NumericUpDown rwLenNUD;
+        private System.Windows.Forms.TextBox cmdRespTB;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox cmdTB;
     }
 }

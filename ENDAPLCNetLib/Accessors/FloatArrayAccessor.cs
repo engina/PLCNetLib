@@ -19,7 +19,7 @@ namespace ENDA.PLCNetLib.Accessors
             }
             set
             {
-                PLC.WriteRaw(Offset + index * ElmSize, value);
+                PLC.Write(Offset + index * ElmSize, value);
             }
         }
     }

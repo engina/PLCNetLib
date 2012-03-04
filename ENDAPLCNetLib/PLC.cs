@@ -83,6 +83,8 @@ namespace ENDA.PLCNetLib
             NetworkStream ns = m_tcp.GetStream();
             MemoryStream ms = new MemoryStream();
             bool found = false;
+            int matchLength = 0;
+            string match = "";
             while (!found)
             {
                 int ch = -1;
@@ -111,12 +113,12 @@ namespace ENDA.PLCNetLib
                 ms.WriteByte((byte)ch);
                 foreach (string until in untils)
                 {
-                    int len = until.Length;
-
-                    if (ms.Position > (len - 1))
+                    matchLength = until.Length;
+                    match = until;
+                    if (ms.Position > (matchLength - 1))
                     {
-                        byte[] buf = new byte[len];
-                        ms.Seek(-len, SeekOrigin.Current);
+                        byte[] buf = new byte[matchLength];
+                        ms.Seek(-matchLength, SeekOrigin.Current);
                         ms.Read(buf, 0, buf.Length);
                         string end = ASCIIEncoding.ASCII.GetString(buf);
                         if (end == until)
@@ -126,9 +128,9 @@ namespace ENDA.PLCNetLib
             }
 
             log.Debug("Recv: \r\n" + Utils.HexDump(ms.GetBuffer(), ms.Length));
-
+            ms.SetLength(ms.Length - matchLength);
             ms.Position = 0;
-            return new Response(ms);
+            return new Response(ms, match);
         }
 
         /// <summary>
@@ -155,10 +157,10 @@ namespace ENDA.PLCNetLib
         /// </summary>
         void Rewrite()
         {
-            Write(m_lastCmd);
+            Send(m_lastCmd);
         }
 
-        void Write(byte[] data)
+        void Send(byte[] data)
         {
             if (!m_tcp.Connected)
             {
@@ -179,9 +181,9 @@ namespace ENDA.PLCNetLib
             }
         }
 
-        void Write(string str)
+        void Send(string str)
         {
-            Write(ASCIIEncoding.ASCII.GetBytes(str));
+            Send(ASCIIEncoding.ASCII.GetBytes(str));
         }
 
         internal static int IP2Int(IPAddress addr)
@@ -317,7 +319,7 @@ namespace ENDA.PLCNetLib
         public IAsyncResult BeginWriteRaw(int offset, byte[] data, AsyncCallback cb, object state)
         {
             log.Debug("BeginWriteRaw");
-            BeginWriteRawDelegate d = WriteRaw;
+            BeginWriteRawDelegate d = Write;
             return d.BeginInvoke(offset, data, cb, state);
         }
 
@@ -325,10 +327,10 @@ namespace ENDA.PLCNetLib
         /// Ends a asynchronous BeginWriteRaw call.
         /// </summary>
         /// <param name="ar"></param>
-        /// <seealso cref="BeginWriteRaw"/>
-        public void EndWriteRaw(IAsyncResult ar)
+        /// <seealso cref="BeginWrite"/>
+        public void EndWrite(IAsyncResult ar)
         {
-            log.Debug("EndWriteRaw");
+            log.Debug("EndWrite");
             AsyncResult a = (AsyncResult)ar;
             BeginWriteRawDelegate d = (BeginWriteRawDelegate)a.AsyncDelegate;
             d.EndInvoke(ar);
@@ -420,9 +422,9 @@ namespace ENDA.PLCNetLib
                 throw e;
             }
             ReadUntil("Password: ");
-            Write(m_pass);
-            string response = ReadUntil(new String[] { "Try again: ", "Password accepted\r\n> " }).String;
-            if (!response.Contains("accepted"))
+            Send(m_pass);
+            string response = ReadUntil(new String[] { "Try again: ", "\r\n> " }).String;
+            if (!response.Contains("Password accepted"))
             {
                 log.Error("Invalid password");
                 m_tcp.Close();
@@ -437,7 +439,7 @@ namespace ENDA.PLCNetLib
         /// <returns>Response</returns>
         public Response Cmd(byte[] buf)
         {
-            Write(buf);
+            Send(buf);
             return ReadUntil();
         }
 
@@ -503,7 +505,7 @@ namespace ENDA.PLCNetLib
             bw.Write(ASCIIEncoding.ASCII.GetBytes(cmd));
             foreach(ushort o in offsets)
                 bw.Write(o);
-            Write(ms.GetBuffer());
+            Send(ms.GetBuffer());
             return ReadUntil().BinaryReader;
         }
 
@@ -516,7 +518,7 @@ namespace ENDA.PLCNetLib
         /// <exception cref="IndexOutOfRangeException">Thrown when offset and/or length is out of PLC memory boundaries.</exception>
         public BinaryReader Read(int offset, int len)
         {
-            Write("readplc " + offset + " " + len);
+            Send("readplc " + offset + " " + len);
             Response resp =  ReadUntil();
             if(resp.String.Contains("Out of bounds!"))
                 throw new IndexOutOfRangeException("Offset and/or length out of bounds.");
@@ -528,7 +530,7 @@ namespace ENDA.PLCNetLib
         /// </summary>
         /// <param name="offset">Offset in bytes.</param>
         /// <param name="data">Data to be written</param>
-        public void WriteRaw(int offset, byte[] data)
+        public void Write(int offset, byte[] data)
         {
             byte[] cmd = ASCIIEncoding.ASCII.GetBytes("writeplc " + offset + " " + data.Length + " ");
             // Fixes #65
@@ -545,12 +547,12 @@ namespace ENDA.PLCNetLib
         /// </summary>
         /// <param name="offset">Offset in bytes</param>
         /// <param name="value">Int32 value</param>
-        public void WriteRaw(int offset, int value)
+        public void Write(int offset, int value)
         {
             MemoryStream ms = new MemoryStream(4);
             BinaryWriter bw = new BinaryWriter(ms);
             bw.Write(value);
-            WriteRaw(offset, ms.GetBuffer());
+            Write(offset, ms.GetBuffer());
         }
 
         /// <summary>
@@ -558,12 +560,12 @@ namespace ENDA.PLCNetLib
         /// </summary>
         /// <param name="offset">Offset in bytes</param>
         /// <param name="value">Float value</param>
-        public void WriteRaw(int offset, float value)
+        public void Write(int offset, float value)
         {
             MemoryStream ms = new MemoryStream(4);
             BinaryWriter bw = new BinaryWriter(ms);
             bw.Write(value);
-            WriteRaw(offset, ms.GetBuffer());
+            Write(offset, ms.GetBuffer());
         }
 
         /// <summary>
@@ -571,12 +573,12 @@ namespace ENDA.PLCNetLib
         /// </summary>
         /// <param name="offset">Offset in bytes</param>
         /// <param name="value">UInt16 value</param>
-        public void WriteRaw(int offset, ushort value)
+        public void Write(int offset, ushort value)
         {
             MemoryStream ms = new MemoryStream(2);
             BinaryWriter bw = new BinaryWriter(ms);
             bw.Write(value);
-            WriteRaw(offset, ms.GetBuffer());
+            Write(offset, ms.GetBuffer());
         }
 
         /// <summary>

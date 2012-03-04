@@ -145,7 +145,7 @@ namespace ENDA.PLCNetLibUnitTests
                 bw.Write(i * 2);
             IAsyncResult ar = plc.BeginWriteRaw(0, ms.GetBuffer(), null, null);
             ar.AsyncWaitHandle.WaitOne();
-            plc.EndWriteRaw(ar);
+            plc.EndWrite(ar);
 
             ar = plc.BeginRead(0, INT_COUNT * 4, null, null);
             ar.AsyncWaitHandle.WaitOne();

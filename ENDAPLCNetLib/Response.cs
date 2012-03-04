@@ -14,10 +14,11 @@ namespace ENDA.PLCNetLib
     public class Response
     {
         MemoryStream m_ms;
-
-        internal Response(MemoryStream ms)
+        string m_match;
+        internal Response(MemoryStream ms, string match)
         {
             m_ms = ms;
+            m_match = match;
         }
 
         /// <summary>
@@ -51,9 +52,18 @@ namespace ENDA.PLCNetLib
         {
             get
             {
-                string str = ASCIIEncoding.ASCII.GetString(m_ms.GetBuffer(), 0, (int)m_ms.Length);
-                str = str.Substring(0, str.Length - 4);
-                return str;
+                return ASCIIEncoding.ASCII.GetString(m_ms.GetBuffer(), 0, (int)m_ms.Length);
+            }
+        }
+
+        /// <summary>
+        /// The text that has matched for this response to be matched. Such as "\r\n> ", the prompt.
+        /// </summary>
+        public String MatchText
+        {
+            get
+            {
+                return m_match;
             }
         }
     }

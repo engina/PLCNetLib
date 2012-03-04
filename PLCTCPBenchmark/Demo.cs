@@ -11,6 +11,8 @@ using System.Net;
 using System.Security.Authentication;
 using ENDA.PLCNetLib.Diagnostics;
 using Be.Windows.Forms;
+using PLCTCPBenchmark.Properties;
+using System.IO;
 
 namespace PLCTCPBenchmark
 {
@@ -33,26 +35,36 @@ namespace PLCTCPBenchmark
         }
 
         Finder m_finder;
+        string[] m_helpTexts;
 
         public Demo()
         {
             InitializeComponent();
+            m_helpTexts = new string[]
+            {
+                Resources.HelpFinder,
+                Resources.HelpConnect,
+                Resources.HelpMI,
+                Resources.HelpMW
+            };
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            helpRTB.Text = m_helpTexts[0];
             LogManager.LogFired += new LogManager.LogHandler(LogManager_LogFired);
             m_finder = new Finder();
             m_finder.DeviceFound += new Finder.DeviceFoundHandler(m_finder_DeviceFound);
-            writeRawHB.StringViewVisible = true;
-            writeRawHB.LineInfoVisible = true;
-            writeRawHB.UseFixedBytesPerLine = true;
-            writeRawHB.BytesPerLine = 16;
-            writeRawP.Controls.Add(writeRawHB);
+            rwHB.StringViewVisible = true;
+            rwHB.LineInfoVisible = true;
+            rwHB.UseFixedBytesPerLine = true;
+            rwHB.BytesPerLine = 16;
+            rwHB.VScrollBarVisible = true;
+            readWriteP.Controls.Add(rwHB);
             DynamicByteProvider dbp = new DynamicByteProvider(new byte[1]);
             dbp.LengthChanged +=new EventHandler(writeRawLengthChangedHandler);
-            writeRawHB.ByteProvider = dbp;
+            rwHB.ByteProvider = dbp;
 
         }
 
@@ -381,12 +393,131 @@ namespace PLCTCPBenchmark
 
         private void writeRawOffsetNUD_ValueChanged(object sender, EventArgs e)
         {
-            writeRawHB.LineInfoOffset = (long)writeRawOffsetNUD.Value;
+            rwHB.LineInfoOffset = (long)rwOffsetNUD.Value;
         }
 
         void writeRawLengthChangedHandler(object sender, EventArgs e)
         {
-            writeRawLengthL.Text = String.Format("Length: {0}", ((DynamicByteProvider)sender).Length);
+            rwLenNUD.Value = ((DynamicByteProvider)sender).Length;
+        }
+
+        private void writeRawB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            DynamicByteProvider dbp = (DynamicByteProvider)rwHB.ByteProvider;
+            byte[] data = dbp.Bytes.ToArray();
+            int offset = (int)rwOffsetNUD.Value;
+            rwStatusL.Text = "Writing synchronously...";
+            Application.DoEvents(); // Force GUI update
+            p.Write(offset, data);
+            rwStatusL.Text = "Done";
+        }
+
+        private void writeAsyncHandler(IAsyncResult ar)
+        {
+            if (InvokeRequired)
+            {
+                // We'll update GUI, so we need to pass the async call back processing
+                // to the GUI thread.
+                BeginInvoke(new AsyncCallback(writeAsyncHandler), new object[]{ar});
+                return;
+            }
+            PLC p = (PLC)ar.AsyncState;
+            p.EndWrite(ar);
+            rwStatusL.Text = "Done";
+        }
+
+        private void writeAsyncB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            DynamicByteProvider dbp = (DynamicByteProvider)rwHB.ByteProvider;
+            byte[] data = dbp.Bytes.ToArray();
+            int offset = (int)rwOffsetNUD.Value;
+            rwStatusL.Text = "Writing asynchronously...";
+            p.BeginWriteRaw(offset, data, new AsyncCallback(writeAsyncHandler), p);
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int i = tabControl1.SelectedIndex;
+            if(i < 0 || i >= m_helpTexts.Length) return;
+            helpRTB.Text = m_helpTexts[i];
+        }
+
+        private void readB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            int offset = (int)rwOffsetNUD.Value;
+            int len = (int)rwLenNUD.Value;
+            BinaryReader br = p.Read(offset, len);
+            rwHB.ByteProvider = new DynamicByteProvider(new byte[len]);
+            rwHB.ByteProvider.LengthChanged += new EventHandler(writeRawLengthChangedHandler);
+            for (int i = 0; i < len; i++)
+                rwHB.ByteProvider.WriteByte(i, br.ReadByte());
+        }
+
+        private void readAsyncHandler(IAsyncResult ar)
+        {
+            if (InvokeRequired)
+            {
+                // We'll update GUI, so we need to pass the async call back processing
+                // to the GUI thread.
+                BeginInvoke(new AsyncCallback(readAsyncHandler), new object[] { ar });
+                return;
+            }
+            PLC p = (PLC)ar.AsyncState;
+            BinaryReader br = p.EndRead(ar);
+            rwHB.ByteProvider = new DynamicByteProvider(new byte[br.BaseStream.Length]);
+            for (int i = 0; i < br.BaseStream.Length; i++)
+                rwHB.ByteProvider.WriteByte(i, br.ReadByte());
+        }
+
+        private void readAsyncB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+            int offset = (int)rwOffsetNUD.Value;
+            int len = (int)rwLenNUD.Value;
+            p.BeginRead(offset, len, new AsyncCallback(readAsyncHandler), p);
+        }
+
+        private List<String> m_cmdHist = new List<string>();
+
+        private int m_cmdIdx = 0;
+        private void cmdTB_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                PLC p = (PLC)plcCB.SelectedItem;
+                if (p == null) return;
+                Response resp = p.Cmd(cmdTB.Text);
+                cmdRespTB.AppendText(resp.String.Replace("\n", "\r\n"));
+                m_cmdHist.Add(cmdTB.Text);
+                cmdTB.Text = "";
+                m_cmdIdx = 0;
+            }
+            else if (e.KeyCode == Keys.Up)
+            {
+                if (m_cmdIdx < m_cmdHist.Count)
+                {
+                    cmdTB.Text = m_cmdHist[m_cmdHist.Count - ++m_cmdIdx];
+                }
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                if (m_cmdIdx > 1)
+                {
+                    cmdTB.Text = m_cmdHist[m_cmdHist.Count - --m_cmdIdx];
+                }
+                else
+                {
+                    m_cmdIdx = 0;
+                    cmdTB.Text = "";
+                }
+            }
         }
     }
 }
