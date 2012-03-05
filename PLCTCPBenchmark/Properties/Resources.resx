@@ -117,16 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="HelpConnect" xml:space="preserve">
-    <value>connect help</value>
-  </data>
-  <data name="HelpFinder" xml:space="preserve">
-    <value>finder help</value>
-  </data>
-  <data name="HelpMI" xml:space="preserve">
-    <value>mi register</value>
-  </data>
-  <data name="HelpMW" xml:space="preserve">
-    <value>mw register</value>
-  </data>
 </root>

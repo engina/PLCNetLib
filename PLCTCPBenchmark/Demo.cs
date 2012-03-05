@@ -13,6 +13,7 @@ using ENDA.PLCNetLib.Diagnostics;
 using Be.Windows.Forms;
 using PLCTCPBenchmark.Properties;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace PLCTCPBenchmark
 {
@@ -35,24 +36,16 @@ namespace PLCTCPBenchmark
         }
 
         Finder m_finder;
-        string[] m_helpTexts;
-
+        
         public Demo()
         {
             InitializeComponent();
-            m_helpTexts = new string[]
-            {
-                Resources.HelpFinder,
-                Resources.HelpConnect,
-                Resources.HelpMI,
-                Resources.HelpMW
-            };
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            helpRTB.Text = m_helpTexts[0];
+            tabControl1_SelectedIndexChanged(tabControl1, EventArgs.Empty);
             LogManager.LogFired += new LogManager.LogHandler(LogManager_LogFired);
             m_finder = new Finder();
             m_finder.DeviceFound += new Finder.DeviceFoundHandler(m_finder_DeviceFound);
@@ -424,8 +417,19 @@ namespace PLCTCPBenchmark
                 return;
             }
             PLC p = (PLC)ar.AsyncState;
-            p.EndWrite(ar);
-            rwStatusL.Text = "Done";
+            try
+            {
+                p.EndWrite(ar);
+                rwStatusL.Text = "Done";
+            }
+            catch (IndexOutOfRangeException exc)
+            {
+                rwStatusL.Text = "Out of range or max request capacity";
+            }
+            catch (Exception exc)
+            {
+                rwStatusL.Text = "Unexpected error: " + exc.Message;
+            }
         }
 
         private void writeAsyncB_Click(object sender, EventArgs e)
@@ -441,9 +445,18 @@ namespace PLCTCPBenchmark
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int i = tabControl1.SelectedIndex;
-            if(i < 0 || i >= m_helpTexts.Length) return;
-            helpRTB.Text = m_helpTexts[i];
+            try
+            {
+                string name = tabControl1.SelectedTab.Text;
+                string file = String.Empty;
+                foreach (char ch in name)
+                    file += Char.IsLetterOrDigit(ch) ? ch : '_';
+                helpRTB.LoadFile("docs/" + file + ".rtf");
+            }
+            catch (Exception exc)
+            {
+                helpRTB.Text = "Could not load help: " + exc.Message;
+            }
         }
 
         private void readB_Click(object sender, EventArgs e)
@@ -469,10 +482,25 @@ namespace PLCTCPBenchmark
                 return;
             }
             PLC p = (PLC)ar.AsyncState;
-            BinaryReader br = p.EndRead(ar);
-            rwHB.ByteProvider = new DynamicByteProvider(new byte[br.BaseStream.Length]);
-            for (int i = 0; i < br.BaseStream.Length; i++)
-                rwHB.ByteProvider.WriteByte(i, br.ReadByte());
+            BinaryReader br;
+
+            try
+            {
+                br = p.EndRead(ar);
+                rwStatusL.Text = "Done";
+
+                rwHB.ByteProvider = new DynamicByteProvider(new byte[br.BaseStream.Length]);
+                for (int i = 0; i < br.BaseStream.Length; i++)
+                    rwHB.ByteProvider.WriteByte(i, br.ReadByte());
+            }
+            catch (IndexOutOfRangeException exc)
+            {
+                rwStatusL.Text = "Out of range or max request capacity";
+            }
+            catch (Exception exc)
+            {
+                rwStatusL.Text = "Unexpected error: " + exc.Message;
+            }
         }
 
         private void readAsyncB_Click(object sender, EventArgs e)
@@ -484,8 +512,25 @@ namespace PLCTCPBenchmark
             p.BeginRead(offset, len, new AsyncCallback(readAsyncHandler), p);
         }
 
-        private List<String> m_cmdHist = new List<string>();
+        private void cmdAsyncHandler(IAsyncResult ar)
+        {
+            if (InvokeRequired)
+            {
+                // We'll update GUI, so we need to pass the async call back processing
+                // to the GUI thread.
+                BeginInvoke(new AsyncCallback(cmdAsyncHandler), new object[] { ar });
+                return;
+            }
+            PLC p = (PLC)ar.AsyncState;
+            Response resp = p.EndCmd(ar);
+            // Let's convert UNIX line endings to Windows.
+            string respStr = resp.String.Replace("\n", "\r\n");
+            // And append a new line, just in case.
+            respStr += "\r\n";
+            cmdRespTB.AppendText(respStr);
+        }
 
+        private List<String> m_cmdHist = new List<string>();
         private int m_cmdIdx = 0;
         private void cmdTB_KeyUp(object sender, KeyEventArgs e)
         {
@@ -493,8 +538,19 @@ namespace PLCTCPBenchmark
             {
                 PLC p = (PLC)plcCB.SelectedItem;
                 if (p == null) return;
-                Response resp = p.Cmd(cmdTB.Text);
-                cmdRespTB.AppendText(resp.String.Replace("\n", "\r\n"));
+                if (cmdAsyncCB.Checked)
+                {
+                    p.BeginCmd(ASCIIEncoding.ASCII.GetBytes(cmdTB.Text), new AsyncCallback(cmdAsyncHandler), p);
+                }
+                else
+                {
+                    Response resp = p.Cmd(cmdTB.Text);
+                    // Let's convert UNIX line endings to Windows.
+                    string respStr = resp.String.Replace("\n", "\r\n");
+                    // And append a new line, just in case.
+                    respStr += "\r\n";
+                    cmdRespTB.AppendText(respStr);
+                }
                 m_cmdHist.Add(cmdTB.Text);
                 cmdTB.Text = "";
                 m_cmdIdx = 0;
@@ -517,6 +573,36 @@ namespace PLCTCPBenchmark
                     m_cmdIdx = 0;
                     cmdTB.Text = "";
                 }
+            }
+        }
+
+        private void readMultiB_Click(object sender, EventArgs e)
+        {
+            PLC p = (PLC)plcCB.SelectedItem;
+            if (p == null) return;
+
+            int rows = readMultiDGV.Rows.Count - 1;
+            if (rows < 1)
+            {
+                MessageBox.Show("Please at least enter 1 offset");
+                return;
+            }
+            ushort[] offsets = new ushort[rows];
+            try
+            {
+                for (int i = 0; i < offsets.Length; i++)
+                {
+                    offsets[i] = UInt16.Parse((string)readMultiDGV.Rows[i].Cells[0].Value);
+                }
+                BinaryReader br = p.ReadMulti(offsets);
+                for (int i = 0; i < offsets.Length; i++)
+                {
+                    readMultiDGV.Rows[i].Cells[1].Value = br.ReadInt32();
+                }
+            }
+            catch (Exception exc)
+            {
+                readMultiStatusL.Text = exc.Message;
             }
         }
     }

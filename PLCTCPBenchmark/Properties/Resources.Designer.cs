@@ -59,41 +59,5 @@ namespace PLCTCPBenchmark.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to connect help.
-        /// </summary>
-        internal static string HelpConnect {
-            get {
-                return ResourceManager.GetString("HelpConnect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to finder help.
-        /// </summary>
-        internal static string HelpFinder {
-            get {
-                return ResourceManager.GetString("HelpFinder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to mi register.
-        /// </summary>
-        internal static string HelpMI {
-            get {
-                return ResourceManager.GetString("HelpMI", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to mw register.
-        /// </summary>
-        internal static string HelpMW {
-            get {
-                return ResourceManager.GetString("HelpMW", resourceCulture);
-            }
-        }
     }
 }
