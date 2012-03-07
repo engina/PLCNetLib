@@ -163,7 +163,7 @@ namespace PLCTCPBenchmark
 
         private void connectB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             connectStatusL.Text = "Connecting synchronously...";
             Application.DoEvents();
@@ -208,7 +208,7 @@ namespace PLCTCPBenchmark
 
         private void asyncConnectB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             connectStatusL.Text = "Connecting asynchronously...";
             p.BeginConnect(new AsyncCallback(asyncConnectHandler), p);
@@ -216,7 +216,7 @@ namespace PLCTCPBenchmark
 
         private void miReadB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             int offset = (int)miOffsetNUD.Value;
             miReadL.Text = p.MI[offset].ToString();
@@ -224,7 +224,7 @@ namespace PLCTCPBenchmark
 
         private void miWriteB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             try
             {
@@ -240,7 +240,7 @@ namespace PLCTCPBenchmark
 
         private void mfReadB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             int offset = (int)mfOffsetNUD.Value;
             mfReadL.Text = p.MF[offset].ToString();
@@ -248,7 +248,7 @@ namespace PLCTCPBenchmark
 
         private void mfWriteB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             try
             {
@@ -264,7 +264,7 @@ namespace PLCTCPBenchmark
 
         private void mbReadB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             int offset = (int)mbOffsetNUD.Value;
             mbReadL.Text = p.MB[offset].ToString();
@@ -272,7 +272,7 @@ namespace PLCTCPBenchmark
 
         private void mbWriteB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             try
             {
@@ -288,7 +288,7 @@ namespace PLCTCPBenchmark
 
         private void mwReadB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             int offset = (int)mwOffsetNUD.Value;
             mwReadL.Text = p.MW[offset].ToString();
@@ -296,7 +296,7 @@ namespace PLCTCPBenchmark
 
         private void mwWriteB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             try
             {
@@ -312,7 +312,7 @@ namespace PLCTCPBenchmark
 
         private void ipReadB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             int offset = (int)ipOffsetNUD.Value;
             ipReadL.Text = p.IP[offset] ? "ON" : "OFF";
@@ -320,7 +320,7 @@ namespace PLCTCPBenchmark
 
         private void qpReadB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             int offset = (int)qpOffsetNUD.Value;
             qpReadL.Text = p.QP[offset].ToString();
@@ -328,7 +328,7 @@ namespace PLCTCPBenchmark
 
         private void qpWriteB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             try
             {
@@ -344,7 +344,7 @@ namespace PLCTCPBenchmark
 
         private void timeReadB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             try
             {
@@ -358,7 +358,7 @@ namespace PLCTCPBenchmark
 
         private void timeWriteB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             try
             {
@@ -372,14 +372,14 @@ namespace PLCTCPBenchmark
 
         private void runB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             runL.Text = p.Run() ? "OK" : "FAIL";
         }
 
         private void stopB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             stopL.Text = p.Stop() ? "OK" : "FAIL";
         }
@@ -396,7 +396,7 @@ namespace PLCTCPBenchmark
 
         private void writeRawB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             DynamicByteProvider dbp = (DynamicByteProvider)rwHB.ByteProvider;
             byte[] data = dbp.Bytes.ToArray();
@@ -434,7 +434,7 @@ namespace PLCTCPBenchmark
 
         private void writeAsyncB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             DynamicByteProvider dbp = (DynamicByteProvider)rwHB.ByteProvider;
             byte[] data = dbp.Bytes.ToArray();
@@ -461,7 +461,7 @@ namespace PLCTCPBenchmark
 
         private void readB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             int offset = (int)rwOffsetNUD.Value;
             int len = (int)rwLenNUD.Value;
@@ -505,7 +505,7 @@ namespace PLCTCPBenchmark
 
         private void readAsyncB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
             int offset = (int)rwOffsetNUD.Value;
             int len = (int)rwLenNUD.Value;
@@ -536,7 +536,7 @@ namespace PLCTCPBenchmark
         {
             if (e.KeyCode == Keys.Enter)
             {
-                PLC p = (PLC)plcCB.SelectedItem;
+                PLC p = SelectedPLC;
                 if (p == null) return;
                 if (cmdAsyncCB.Checked)
                 {
@@ -578,7 +578,7 @@ namespace PLCTCPBenchmark
 
         private void readMultiB_Click(object sender, EventArgs e)
         {
-            PLC p = (PLC)plcCB.SelectedItem;
+            PLC p = SelectedPLC;
             if (p == null) return;
 
             int rows = readMultiDGV.Rows.Count - 1;
@@ -594,11 +594,80 @@ namespace PLCTCPBenchmark
                 {
                     offsets[i] = UInt16.Parse((string)readMultiDGV.Rows[i].Cells[0].Value);
                 }
+                readMultiStatusL.Text = "Reading synchronously...";
                 BinaryReader br = p.ReadMulti(offsets);
+                readMultiStatusL.Text = "Done";
                 for (int i = 0; i < offsets.Length; i++)
                 {
                     readMultiDGV.Rows[i].Cells[1].Value = br.ReadInt32();
                 }
+            }
+            catch (Exception exc)
+            {
+                readMultiStatusL.Text = exc.Message;
+            }
+        }
+
+        private void readMultiAsyncHandler(IAsyncResult ar)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new AsyncCallback(readMultiAsyncHandler), new object[] { ar });
+                return;
+            }
+            try
+            {
+                object[] states = (object[])ar.AsyncState;
+                PLC p = (PLC)states[0];
+                int len = (int)states[1];
+                BinaryReader br = p.EndReadMulti(ar);
+                for (int i = 0; i < len; i++)
+                {
+                    readMultiDGV.Rows[i].Cells[1].Value = br.ReadInt32();
+                }
+                readMultiStatusL.Text = "Done";
+            }
+            catch (Exception exc)
+            {
+                readMultiStatusL.Text = exc.Message;
+            }
+        }
+
+        private PLC SelectedPLC
+        {
+            get
+            {
+                PLC p = (PLC)plcCB.SelectedItem;
+                if (p == null)
+                {
+                    MessageBox.Show("Please select a PLC from top menu first.");
+                    return null;
+                }
+                return p;
+            }
+        }
+
+        private void readMultiAsyncB_Click(object sender, EventArgs e)
+        {
+            PLC p = SelectedPLC;
+            if (p == null) return;
+            int rows = readMultiDGV.Rows.Count - 1;
+            if (rows < 1)
+            {
+                MessageBox.Show("Please at least enter 1 offset");
+                return;
+            }
+            ushort[] offsets = new ushort[rows];
+            try
+            {
+                for (int i = 0; i < offsets.Length; i++)
+                {
+                    offsets[i] = UInt16.Parse((string)readMultiDGV.Rows[i].Cells[0].Value);
+                }
+                readMultiStatusL.Text = "Reading asynchronously...";
+
+                BinaryReader br = p.ReadMulti(offsets);
+                p.BeginReadMulti(offsets, new AsyncCallback(readMultiAsyncHandler), new object[]{p, offsets.Length});
             }
             catch (Exception exc)
             {

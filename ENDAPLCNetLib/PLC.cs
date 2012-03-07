@@ -412,6 +412,7 @@ namespace ENDA.PLCNetLib
             log.Info("Connecting...");
             // In case m_tcp is disposed. Fixes #63.
             m_tcp = new TcpClient();
+            m_tcp.ReceiveTimeout = m_tcp.SendTimeout = 5000;
             try
             {
                 m_tcp.Connect(m_pip);
@@ -797,6 +798,29 @@ namespace ENDA.PLCNetLib
         /// </summary>
         /// <exception cref="IndexOutOfRangeException">Thrown when offset and/or length is out of PLC memory boundaries.</exception>
         public UInt16ArrayAccessor MW;
+
+        /// <summary>
+        /// <p>
+        /// This is the TcpClient isntance that is being used by this PLC instance. You can use this to set Timeouts and various
+        /// configuration that your scneario might need. By default, PLC instances set their timeouts to 5000 milliseconds.
+        /// </p>
+        /// <p>
+        /// Use with caution.
+        /// </p>
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// plc.TcpClient.ReceiveTimeout = 1000;
+        /// plc.TcpClient.SendTimeout = 1000;
+        /// </code>
+        /// </example>
+        public TcpClient TcpClient
+        {
+            get
+            {
+                return m_tcp;
+            }
+        }
 
         public override string ToString()
         {

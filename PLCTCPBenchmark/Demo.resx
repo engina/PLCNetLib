@@ -130,4 +130,10 @@ Connect button does this in a blocking fashion, as in your GUI will block (freez
 
 Async Connect button does the same operation as Connect button, but in a non-blocking way, the GUI will be responsive regardless of the connect operation.</value>
   </data>
+  <metadata name="Offset.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="Value.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
 </root>

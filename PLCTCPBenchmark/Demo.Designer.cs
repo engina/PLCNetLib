@@ -44,7 +44,6 @@
             this.finderP = new System.Windows.Forms.TabPage();
             this.label5 = new System.Windows.Forms.Label();
             this.scanPassTB = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.scanAddB = new System.Windows.Forms.Button();
             this.scanB = new System.Windows.Forms.Button();
             this.scanLB = new System.Windows.Forms.ListBox();
@@ -128,6 +127,12 @@
             this.rwOffsetNUD = new System.Windows.Forms.NumericUpDown();
             this.rwHB = new Be.Windows.Forms.HexBox();
             this.readMultiP = new System.Windows.Forms.TabPage();
+            this.readMultiStatusL = new System.Windows.Forms.Label();
+            this.readMultiAsyncB = new System.Windows.Forms.Button();
+            this.readMultiB = new System.Windows.Forms.Button();
+            this.readMultiDGV = new System.Windows.Forms.DataGridView();
+            this.Offset = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Cmd = new System.Windows.Forms.TabPage();
             this.cmdAsyncCB = new System.Windows.Forms.CheckBox();
             this.cmdRespTB = new System.Windows.Forms.TextBox();
@@ -137,12 +142,6 @@
             this.helpRTB = new System.Windows.Forms.RichTextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.readMultiDGV = new System.Windows.Forms.DataGridView();
-            this.Offset = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.readMultiB = new System.Windows.Forms.Button();
-            this.readMultiAsyncB = new System.Windows.Forms.Button();
-            this.readMultiStatusL = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.portNUD)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -166,6 +165,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.rwLenNUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rwOffsetNUD)).BeginInit();
             this.readMultiP.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.readMultiDGV)).BeginInit();
             this.Cmd.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -175,7 +175,6 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.readMultiDGV)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -328,7 +327,6 @@
             // 
             this.finderP.Controls.Add(this.label5);
             this.finderP.Controls.Add(this.scanPassTB);
-            this.finderP.Controls.Add(this.label4);
             this.finderP.Controls.Add(this.scanAddB);
             this.finderP.Controls.Add(this.scanB);
             this.finderP.Controls.Add(this.scanLB);
@@ -341,8 +339,9 @@
             // 
             // label5
             // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 181);
+            this.label5.Location = new System.Drawing.Point(137, 229);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(396, 13);
             this.label5.TabIndex = 5;
@@ -351,28 +350,16 @@
             // 
             // scanPassTB
             // 
-            this.scanPassTB.Location = new System.Drawing.Point(13, 200);
+            this.scanPassTB.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.scanPassTB.Location = new System.Drawing.Point(209, 247);
             this.scanPassTB.Name = "scanPassTB";
             this.scanPassTB.Size = new System.Drawing.Size(120, 20);
             this.scanPassTB.TabIndex = 4;
             // 
-            // label4
-            // 
-            this.label4.AutoEllipsis = true;
-            this.label4.AutoSize = true;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label4.Location = new System.Drawing.Point(0, 350);
-            this.label4.MaximumSize = new System.Drawing.Size(500, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(485, 26);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "This is a demomnstration of ENDA.PLCNetLib.Finder class. It scans the local netwo" +
-    "rk for online PLCs and then you can add them to the combobox at top.";
-            // 
             // scanAddB
             // 
-            this.scanAddB.Location = new System.Drawing.Point(151, 198);
+            this.scanAddB.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.scanAddB.Location = new System.Drawing.Point(347, 245);
             this.scanAddB.Name = "scanAddB";
             this.scanAddB.Size = new System.Drawing.Size(75, 23);
             this.scanAddB.TabIndex = 2;
@@ -382,7 +369,8 @@
             // 
             // scanB
             // 
-            this.scanB.Location = new System.Drawing.Point(89, 9);
+            this.scanB.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.scanB.Location = new System.Drawing.Point(285, 56);
             this.scanB.Name = "scanB";
             this.scanB.Size = new System.Drawing.Size(61, 23);
             this.scanB.TabIndex = 1;
@@ -392,8 +380,9 @@
             // 
             // scanLB
             // 
+            this.scanLB.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.scanLB.FormattingEnabled = true;
-            this.scanLB.Location = new System.Drawing.Point(13, 38);
+            this.scanLB.Location = new System.Drawing.Point(209, 85);
             this.scanLB.Name = "scanLB";
             this.scanLB.Size = new System.Drawing.Size(213, 95);
             this.scanLB.TabIndex = 0;
@@ -654,7 +643,7 @@
             this.mbP.Location = new System.Drawing.Point(104, 4);
             this.mbP.Name = "mbP";
             this.mbP.Padding = new System.Windows.Forms.Padding(3);
-            this.mbP.Size = new System.Drawing.Size(664, 367);
+            this.mbP.Size = new System.Drawing.Size(664, 376);
             this.mbP.TabIndex = 2;
             this.mbP.Text = "MB";
             this.mbP.UseVisualStyleBackColor = true;
@@ -749,7 +738,7 @@
             this.mwP.Location = new System.Drawing.Point(104, 4);
             this.mwP.Name = "mwP";
             this.mwP.Padding = new System.Windows.Forms.Padding(3);
-            this.mwP.Size = new System.Drawing.Size(664, 367);
+            this.mwP.Size = new System.Drawing.Size(664, 376);
             this.mwP.TabIndex = 15;
             this.mwP.Text = "MW";
             this.mwP.UseVisualStyleBackColor = true;
@@ -839,7 +828,7 @@
             this.ipP.Location = new System.Drawing.Point(104, 4);
             this.ipP.Name = "ipP";
             this.ipP.Padding = new System.Windows.Forms.Padding(3);
-            this.ipP.Size = new System.Drawing.Size(664, 367);
+            this.ipP.Size = new System.Drawing.Size(664, 376);
             this.ipP.TabIndex = 3;
             this.ipP.Text = "IP";
             this.ipP.UseVisualStyleBackColor = true;
@@ -907,7 +896,7 @@
             this.qpP.Location = new System.Drawing.Point(104, 4);
             this.qpP.Name = "qpP";
             this.qpP.Padding = new System.Windows.Forms.Padding(3);
-            this.qpP.Size = new System.Drawing.Size(664, 367);
+            this.qpP.Size = new System.Drawing.Size(664, 376);
             this.qpP.TabIndex = 4;
             this.qpP.Text = "QP";
             this.qpP.UseVisualStyleBackColor = true;
@@ -1000,7 +989,7 @@
             this.timeP.Location = new System.Drawing.Point(104, 4);
             this.timeP.Name = "timeP";
             this.timeP.Padding = new System.Windows.Forms.Padding(3);
-            this.timeP.Size = new System.Drawing.Size(664, 321);
+            this.timeP.Size = new System.Drawing.Size(664, 376);
             this.timeP.TabIndex = 5;
             this.timeP.Text = "Time";
             this.timeP.UseVisualStyleBackColor = true;
@@ -1071,7 +1060,7 @@
             this.runstopP.Location = new System.Drawing.Point(104, 4);
             this.runstopP.Name = "runstopP";
             this.runstopP.Padding = new System.Windows.Forms.Padding(3);
-            this.runstopP.Size = new System.Drawing.Size(664, 321);
+            this.runstopP.Size = new System.Drawing.Size(664, 376);
             this.runstopP.TabIndex = 6;
             this.runstopP.Text = "Run/Stop";
             this.runstopP.UseVisualStyleBackColor = true;
@@ -1260,6 +1249,58 @@
             this.readMultiP.Text = "ReadMulti";
             this.readMultiP.UseVisualStyleBackColor = true;
             // 
+            // readMultiStatusL
+            // 
+            this.readMultiStatusL.AutoSize = true;
+            this.readMultiStatusL.Location = new System.Drawing.Point(256, 36);
+            this.readMultiStatusL.Name = "readMultiStatusL";
+            this.readMultiStatusL.Size = new System.Drawing.Size(0, 13);
+            this.readMultiStatusL.TabIndex = 3;
+            // 
+            // readMultiAsyncB
+            // 
+            this.readMultiAsyncB.Location = new System.Drawing.Point(337, 6);
+            this.readMultiAsyncB.Name = "readMultiAsyncB";
+            this.readMultiAsyncB.Size = new System.Drawing.Size(85, 23);
+            this.readMultiAsyncB.TabIndex = 2;
+            this.readMultiAsyncB.Text = "Async ReadMulti";
+            this.readMultiAsyncB.UseVisualStyleBackColor = true;
+            this.readMultiAsyncB.Click += new System.EventHandler(this.readMultiAsyncB_Click);
+            // 
+            // readMultiB
+            // 
+            this.readMultiB.Location = new System.Drawing.Point(256, 6);
+            this.readMultiB.Name = "readMultiB";
+            this.readMultiB.Size = new System.Drawing.Size(75, 23);
+            this.readMultiB.TabIndex = 1;
+            this.readMultiB.Text = "ReadMulti";
+            this.readMultiB.UseVisualStyleBackColor = true;
+            this.readMultiB.Click += new System.EventHandler(this.readMultiB_Click);
+            // 
+            // readMultiDGV
+            // 
+            this.readMultiDGV.AllowUserToOrderColumns = true;
+            this.readMultiDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.readMultiDGV.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Offset,
+            this.Value});
+            this.readMultiDGV.Dock = System.Windows.Forms.DockStyle.Left;
+            this.readMultiDGV.Location = new System.Drawing.Point(3, 3);
+            this.readMultiDGV.Name = "readMultiDGV";
+            this.readMultiDGV.Size = new System.Drawing.Size(247, 370);
+            this.readMultiDGV.TabIndex = 0;
+            // 
+            // Offset
+            // 
+            this.Offset.HeaderText = "Offset";
+            this.Offset.Name = "Offset";
+            // 
+            // Value
+            // 
+            this.Value.HeaderText = "Value";
+            this.Value.Name = "Value";
+            this.Value.ReadOnly = true;
+            // 
             // Cmd
             // 
             this.Cmd.Controls.Add(this.cmdAsyncCB);
@@ -1269,7 +1310,7 @@
             this.Cmd.Location = new System.Drawing.Point(104, 4);
             this.Cmd.Name = "Cmd";
             this.Cmd.Padding = new System.Windows.Forms.Padding(3);
-            this.Cmd.Size = new System.Drawing.Size(664, 321);
+            this.Cmd.Size = new System.Drawing.Size(664, 376);
             this.Cmd.TabIndex = 10;
             this.Cmd.Text = "Cmd";
             this.Cmd.UseVisualStyleBackColor = true;
@@ -1374,58 +1415,6 @@
             this.splitContainer2.SplitterDistance = 384;
             this.splitContainer2.TabIndex = 23;
             // 
-            // readMultiDGV
-            // 
-            this.readMultiDGV.AllowUserToOrderColumns = true;
-            this.readMultiDGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.readMultiDGV.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Offset,
-            this.Value});
-            this.readMultiDGV.Dock = System.Windows.Forms.DockStyle.Left;
-            this.readMultiDGV.Location = new System.Drawing.Point(3, 3);
-            this.readMultiDGV.Name = "readMultiDGV";
-            this.readMultiDGV.Size = new System.Drawing.Size(247, 370);
-            this.readMultiDGV.TabIndex = 0;
-            // 
-            // Offset
-            // 
-            this.Offset.HeaderText = "Offset";
-            this.Offset.Name = "Offset";
-            // 
-            // Value
-            // 
-            this.Value.HeaderText = "Value";
-            this.Value.Name = "Value";
-            this.Value.ReadOnly = true;
-            // 
-            // readMultiB
-            // 
-            this.readMultiB.Location = new System.Drawing.Point(256, 6);
-            this.readMultiB.Name = "readMultiB";
-            this.readMultiB.Size = new System.Drawing.Size(75, 23);
-            this.readMultiB.TabIndex = 1;
-            this.readMultiB.Text = "ReadMulti";
-            this.readMultiB.UseVisualStyleBackColor = true;
-            this.readMultiB.Click += new System.EventHandler(this.readMultiB_Click);
-            // 
-            // readMultiAsyncB
-            // 
-            this.readMultiAsyncB.Location = new System.Drawing.Point(337, 6);
-            this.readMultiAsyncB.Name = "readMultiAsyncB";
-            this.readMultiAsyncB.Size = new System.Drawing.Size(85, 23);
-            this.readMultiAsyncB.TabIndex = 2;
-            this.readMultiAsyncB.Text = "Async ReadMulti";
-            this.readMultiAsyncB.UseVisualStyleBackColor = true;
-            // 
-            // readMultiStatusL
-            // 
-            this.readMultiStatusL.AutoSize = true;
-            this.readMultiStatusL.Location = new System.Drawing.Point(256, 36);
-            this.readMultiStatusL.Name = "readMultiStatusL";
-            this.readMultiStatusL.Size = new System.Drawing.Size(41, 13);
-            this.readMultiStatusL.TabIndex = 3;
-            this.readMultiStatusL.Text = "label17";
-            // 
             // Demo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1472,6 +1461,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.rwOffsetNUD)).EndInit();
             this.readMultiP.ResumeLayout(false);
             this.readMultiP.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.readMultiDGV)).EndInit();
             this.Cmd.ResumeLayout(false);
             this.Cmd.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -1483,7 +1473,6 @@
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.readMultiDGV)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1516,7 +1505,6 @@
         private System.Windows.Forms.Button scanAddB;
         private System.Windows.Forms.Button scanB;
         private System.Windows.Forms.ListBox scanLB;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox scanPassTB;
         private System.Windows.Forms.NumericUpDown portNUD;
