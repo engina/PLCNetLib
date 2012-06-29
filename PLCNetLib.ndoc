@@ -1,0 +1,14 @@
+<project SchemaVersion="1.3">
+    <assemblies>
+        <assembly location=".\ENDAPLCNetLib\bin\Debug\ENDAPLCNetLib.dll" documentation=".\ENDAPLCNetLib\bin\Debug\ENDAPLCNetLib.XML" />
+    </assemblies>
+    <documenters>
+        <documenter name="MSDN">
+            <property name="OutputDirectory" value=".\doc\" />
+            <property name="HtmlHelpName" value="Documentation" />
+            <property name="Title" value="An NDoc3 Documented Class Library" />
+            <property name="SdkDocVersion" value="SDK_v3_5" />
+            <property name="SdkDocVersionString" value="VS.90" />
+        </documenter>
+    </documenters>
+</project>

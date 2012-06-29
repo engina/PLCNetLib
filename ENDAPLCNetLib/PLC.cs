@@ -122,7 +122,10 @@ namespace ENDA.PLCNetLib
                         ms.Read(buf, 0, buf.Length);
                         string end = ASCIIEncoding.ASCII.GetString(buf);
                         if (end == until)
+                        {
                             found = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -149,7 +152,8 @@ namespace ENDA.PLCNetLib
         /// <returns></returns>
         Response ReadUntil()
         {
-            return ReadUntil("\r\n> ");
+            // "\r\n\0> \0" is for a buggy firmware release
+            return ReadUntil(new string[]{"\r\n> ", "\r\n\0> \0"});
         }
 
         /// <summary>
@@ -425,7 +429,8 @@ namespace ENDA.PLCNetLib
             }
             ReadUntil("Password: ");
             Send(m_pass);
-            string response = ReadUntil(new String[] { "Try again: ", "\r\n> " }).String;
+            // "\r\n\0> \0" is for a buggy firmware release
+            string response = ReadUntil(new String[] { "Try again: ", "\r\n> ", "\r\n\0> \0"}).String;
             if (!response.Contains("Password accepted"))
             {
                 log.Error("Invalid password");
