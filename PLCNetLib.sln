@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLCNetLibDemo", "PLCTCPBenchmark\PLCNetLibDemo.csproj", "{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLCNetLib", "ENDAPLCNetLib\PLCNetLib.csproj", "{A6518153-42E5-433C-B2F6-71A8D7245C94}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLCNetLibUnitTests", "ENDAPLCNetLibUnitTests\PLCNetLibUnitTests.csproj", "{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}"
@@ -13,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{FAA8C8AB-F059-4890-AD51-9949BCDA029A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plcctrl", "plcctrl\plcctrl.csproj", "{B36964E3-D9DD-4345-B6DD-D84574F39368}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLCNetLibDemo", "PLCNetLibDemo\PLCNetLibDemo.csproj", "{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -30,16 +28,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|x86.ActiveCfg = Debug|x86
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|x86.Build.0 = Debug|x86
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|Any CPU.ActiveCfg = Release|x86
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|Mixed Platforms.Build.0 = Release|x86
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|x86.ActiveCfg = Release|x86
-		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|x86.Build.0 = Release|x86
 		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6518153-42E5-433C-B2F6-71A8D7245C94}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -80,6 +68,16 @@ Global
 		{B36964E3-D9DD-4345-B6DD-D84574F39368}.Release|Mixed Platforms.Build.0 = Release|x86
 		{B36964E3-D9DD-4345-B6DD-D84574F39368}.Release|x86.ActiveCfg = Release|x86
 		{B36964E3-D9DD-4345-B6DD-D84574F39368}.Release|x86.Build.0 = Release|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|x86.ActiveCfg = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Debug|x86.Build.0 = Debug|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|Any CPU.ActiveCfg = Release|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|Mixed Platforms.Build.0 = Release|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|x86.ActiveCfg = Release|x86
+		{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
