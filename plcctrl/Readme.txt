@@ -1,0 +1,1 @@
+﻿A command line utulity to program, firmware update, run/stop/reboot the PLC.

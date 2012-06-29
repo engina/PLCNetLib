@@ -71,8 +71,8 @@ namespace ENDA.PLCNetLibUnitTests
         #endregion
 
         //static IPEndPoint ip = new IPEndPoint(IPAddress.Parse("78.171.23.73"), 23);
-        static IPEndPoint ip = new IPEndPoint(IPAddress.Parse("192.168.1.38"), 23);
-        static string password = "4321";
+        static IPEndPoint ip = new IPEndPoint(IPAddress.Parse("192.168.1.96"), 23);
+        static string password = "1234";
         /// <summary>
         ///A test for Connect
         ///</summary>

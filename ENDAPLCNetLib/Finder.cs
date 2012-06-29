@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using ENDA.PLCNetLib.Diagnostics;
+using System.IO;
 
 namespace ENDA.PLCNetLib
 {
@@ -46,6 +47,7 @@ namespace ENDA.PLCNetLib
         /// <exception cref="SocketException">Thrown when scanner cannot bind to local port 3802. Can happen when another process is using that local port.</exception>
         public Finder()
         {
+            m_remoteEP.Address = IPAddress.Broadcast;
             NetworkInterface[] ifs = NetworkInterface.GetAllNetworkInterfaces();
             foreach (NetworkInterface i in ifs)
             {
@@ -59,10 +61,8 @@ namespace ENDA.PLCNetLib
 
                     if (ip.Address.GetAddressBytes().Length != 4) continue;
                     UdpClient client = new UdpClient(new IPEndPoint(ip.Address, 3802));
-
                     client.BeginReceive(new AsyncCallback(ReceiveCallback), client);
                     client.EnableBroadcast = true;
-                         
                     m_udpClients.Add(client);
                 }
             }
@@ -73,16 +73,26 @@ namespace ENDA.PLCNetLib
             UdpClient client = (UdpClient)ar.AsyncState;
             byte[] data = client.EndReceive(ar, ref m_remoteEP);
 
-            if (data.Length != 6)
+            if (data.Length < 6)
             {
                 client.BeginReceive(new AsyncCallback(ReceiveCallback), client);
                 return;
             }
 
+            BinaryReader br = new BinaryReader(new MemoryStream(data));
             String str = String.Empty;
-            for (int i = 0; i < data.Length; i++)
-                str += Convert.ToString(data[i], 16).PadLeft(2, '0') + ":";
+            for (int i = 0; i < 6; i++)
+                str += Convert.ToString(br.ReadByte(), 16).PadLeft(2, '0') + ":";
             str = str.Substring(0, str.Length-1);
+            if (data.Length > 6)
+            {
+                byte proto = br.ReadByte();
+                if (proto == 2)
+                {
+                    int rev = br.ReadInt32();
+                    //string label = br.ReadString();
+                }
+            }
             if (!m_dict.ContainsKey(str) || !m_dict[str].Equals(m_remoteEP.Address))
             {
                 m_dict[str] = m_remoteEP.Address;
@@ -102,9 +112,19 @@ namespace ENDA.PLCNetLib
         /// </summary>
         public void Scan()
         {
-            m_remoteEP.Address = IPAddress.Broadcast;
             foreach (UdpClient client in m_udpClients)
+            {
                 client.Send(Encoding.ASCII.GetBytes("PING"), 4, m_remoteEP);
+            }
+        }
+
+        public void ReleasePorts()
+        {
+            foreach(UdpClient client in m_udpClients)
+            {
+                client.Close();
+            }
+            m_udpClients.Clear();
         }
 
         IPAddress GetIP(string mac)

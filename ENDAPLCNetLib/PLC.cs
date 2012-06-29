@@ -412,7 +412,8 @@ namespace ENDA.PLCNetLib
             log.Info("Connecting...");
             // In case m_tcp is disposed. Fixes #63.
             m_tcp = new TcpClient();
-            m_tcp.ReceiveTimeout = m_tcp.SendTimeout = 5000;
+            m_tcp.ReceiveTimeout = m_tcp.SendTimeout = 500000;
+            m_tcp.Client.ReceiveTimeout = m_tcp.Client.SendTimeout = 999999999;
             try
             {
                 m_tcp.Connect(m_pip);
