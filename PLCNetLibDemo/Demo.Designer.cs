@@ -718,7 +718,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label16.Location = new System.Drawing.Point(3, 351);
+            this.label16.Location = new System.Drawing.Point(3, 360);
             this.label16.MaximumSize = new System.Drawing.Size(508, 0);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(273, 13);
@@ -811,7 +811,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label19.Location = new System.Drawing.Point(3, 351);
+            this.label19.Location = new System.Drawing.Point(3, 360);
             this.label19.MaximumSize = new System.Drawing.Size(508, 0);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(277, 13);
@@ -876,7 +876,7 @@
             // 
             this.label22.AutoSize = true;
             this.label22.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label22.Location = new System.Drawing.Point(3, 351);
+            this.label22.Location = new System.Drawing.Point(3, 360);
             this.label22.MaximumSize = new System.Drawing.Size(508, 0);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(223, 13);
@@ -971,7 +971,7 @@
             // 
             this.label25.AutoSize = true;
             this.label25.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label25.Location = new System.Drawing.Point(3, 351);
+            this.label25.Location = new System.Drawing.Point(3, 360);
             this.label25.MaximumSize = new System.Drawing.Size(508, 0);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(259, 13);
@@ -998,7 +998,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.label11.Location = new System.Drawing.Point(3, 305);
+            this.label11.Location = new System.Drawing.Point(3, 360);
             this.label11.MaximumSize = new System.Drawing.Size(508, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(417, 13);
@@ -1127,7 +1127,7 @@
             // 
             this.rwLenNUD.Location = new System.Drawing.Point(157, 8);
             this.rwLenNUD.Maximum = new decimal(new int[] {
-            10240,
+            508,
             0,
             0,
             0});
@@ -1135,7 +1135,7 @@
             this.rwLenNUD.Size = new System.Drawing.Size(50, 20);
             this.rwLenNUD.TabIndex = 10;
             this.rwLenNUD.Value = new decimal(new int[] {
-            1024,
+            256,
             0,
             0,
             0});

@@ -11,7 +11,7 @@ using System.Net;
 using System.Security.Authentication;
 using ENDA.PLCNetLib.Diagnostics;
 using Be.Windows.Forms;
-using PLCTCPBenchmark.Properties;
+using PLCNetLibDemo.Properties;
 using System.IO;
 using System.Text.RegularExpressions;
 

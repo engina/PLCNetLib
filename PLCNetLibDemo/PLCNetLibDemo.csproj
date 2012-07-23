@@ -8,8 +8,8 @@
     <ProjectGuid>{4A3D8A7E-1401-48E8-815B-A8F0C1E945C0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PLCTCPBenchmark</RootNamespace>
-    <AssemblyName>PLCTCPBenchmark</AssemblyName>
+    <RootNamespace>PLCNetLibDemo</RootNamespace>
+    <AssemblyName>PLCNetLibDemo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
