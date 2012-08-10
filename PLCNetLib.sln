@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C5A1038F-4594-4087-A084-911DF82E6183}"
 	ProjectSection(SolutionItems) = preProject
 		Local.testsettings = Local.testsettings
+		PLCNetLib1.vsmdi = PLCNetLib1.vsmdi
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
@@ -17,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLCNetLibDemo", "PLCNetLibD
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = PLCTCPBenchmark.vsmdi
+		CategoryFile = PLCNetLib1.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,16 +49,6 @@ Global
 		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B877DC1C-B07F-42EB-BC1B-42DA76955E6B}.Release|x86.ActiveCfg = Release|Any CPU
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Debug|x86.ActiveCfg = Debug|x86
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Debug|x86.Build.0 = Debug|x86
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Release|Any CPU.ActiveCfg = Release|x86
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Release|Mixed Platforms.Build.0 = Release|x86
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Release|x86.ActiveCfg = Release|x86
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A}.Release|x86.Build.0 = Release|x86
 		{B36964E3-D9DD-4345-B6DD-D84574F39368}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{B36964E3-D9DD-4345-B6DD-D84574F39368}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{B36964E3-D9DD-4345-B6DD-D84574F39368}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -81,8 +72,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{FAA8C8AB-F059-4890-AD51-9949BCDA029A} = {C5A1038F-4594-4087-A084-911DF82E6183}
 	EndGlobalSection
 EndGlobal

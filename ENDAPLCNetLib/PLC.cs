@@ -838,5 +838,47 @@ namespace ENDA.PLCNetLib
         {
             m_tcp.Close();
         }
+
+        /// <summary>
+        /// Updates the firmware.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        public void UpdateFirmware(string path)
+        {
+            log.Info("Enabling programming");
+            Cmd("program enable");
+            TcpClient downloader = new TcpClient();
+            downloader.Connect(m_pip.Address, 61163);
+            Socket sock = downloader.Client;
+            byte[] data = new byte[16];
+            sock.Receive(data);
+            string str = ASCIIEncoding.ASCII.GetString(data);
+            if (!str.StartsWith("Access granted"))
+            {
+                downloader.Close();
+                throw new Exception("Access not granted");
+            }
+            log.Info("Sending firmware...");
+            FileStream fs = new FileStream(path, FileMode.Open);
+
+            data = new byte[1024];
+            int r = 0, sent = 0;
+            while ((r = fs.Read(data, 0, data.Length)) != 0)
+            {
+                downloader.Client.Send(data, r, 0);
+                sent += r;
+                log.Info((sent*100/fs.Length).ToString() +"% sent");
+            }
+            data = new byte[22];
+            sock.Receive(data);
+            str = ASCIIEncoding.ASCII.GetString(data);
+            if (!str.StartsWith("Firmware programmed"))
+            {
+                log.Error("Could not program firmware");
+                downloader.Close();
+                throw new Exception("Could not program firmware");
+            }
+            log.Info("Firmware succesfully programmed, now a reboot is required.");
+        }
     }
 }

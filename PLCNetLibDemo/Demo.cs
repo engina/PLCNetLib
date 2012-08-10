@@ -15,7 +15,7 @@ using PLCNetLibDemo.Properties;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace PLCTCPBenchmark
+namespace PLCNetLibDemo
 {
     public partial class Demo : Form
     {
@@ -538,13 +538,14 @@ namespace PLCTCPBenchmark
             {
                 PLC p = SelectedPLC;
                 if (p == null) return;
+
                 if (cmdAsyncCB.Checked)
                 {
-                    p.BeginCmd(ASCIIEncoding.ASCII.GetBytes(cmdTB.Text), new AsyncCallback(cmdAsyncHandler), p);
+                    p.BeginCmd(ASCIIEncoding.ASCII.GetBytes(cmdTB.Text + "\r"), new AsyncCallback(cmdAsyncHandler), p);
                 }
                 else
                 {
-                    Response resp = p.Cmd(cmdTB.Text);
+                    Response resp = p.Cmd(cmdTB.Text + "\r");
                     // Let's convert UNIX line endings to Windows.
                     string respStr = resp.String.Replace("\n", "\r\n");
                     // And append a new line, just in case.
@@ -673,6 +674,125 @@ namespace PLCTCPBenchmark
             {
                 readMultiStatusL.Text = exc.Message;
             }
+        }
+
+        private void fwP_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void fwP_DragDrop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                Array a = (Array)e.Data.GetData(DataFormats.FileDrop);
+
+                if (a != null)
+                {
+                    // Extract string from first array element
+                    // (ignore all files except first if number of files are dropped).
+                    string s = a.GetValue(0).ToString();
+
+                    // Call OpenFile asynchronously.
+                    // Explorer instance from which file is dropped is not responding
+                    // all the time when DragDrop handler is active, so we need to return
+                    // immidiately (especially if OpenFile shows MessageBox).
+
+                    this.BeginInvoke(new OpenFileDelegate(OpenFile), new Object[] { s });
+
+                    this.Activate();        // in the case Explorer overlaps this form
+                }
+            }
+            catch (Exception ex)
+            {
+                // don't show MessageBox here - Explorer is waiting !
+            }
+        }
+
+        string m_path = null;
+        void OpenFile(string file)
+        {
+            FileInfo fi = new FileInfo(file);
+            if (fi.Length > (64 * 1024))
+            {
+                statusL.Text = "File size cannot be bigger than 64kb";
+                return;
+            }
+            m_path = file;
+            using (FileStream fs = new FileStream(file, FileMode.Open))
+            {
+                byte[] buf = new byte[fi.Length];
+                fs.Read(buf, 0, buf.Length);
+                MemoryStream ms = new MemoryStream(buf);
+                BinaryReader br = new BinaryReader(ms);
+
+                // Read size of the firmware, declared by the package itself.
+                // It is masked with 0xB0000000 to tell bootloader that an firmware update is pending.
+                // So, size &= ~0xB0000000 is required to extract the proper actual size.
+                UInt32 size = br.ReadUInt32();
+                updateFlagL.Text = (size & 0xB0000000) != 0 ? "OK" : "NOT set!";
+                updateFlagL.ForeColor = (size & 0xB0000000) != 0 ? Color.Green : Color.Red;
+                size &= ~0xB0000000;
+
+                // Size information
+                sizeL.Text = size.ToString() + " (Padded package: " + fi.Length + ")";
+                if ((size + 256 + 4) == fi.Length)
+                {
+                    sizeL.Text += " OK";
+                    sizeL.ForeColor = Color.Green;
+                }
+                else
+                {
+                    sizeL.Text += "FAIL";
+                    sizeL.ForeColor = Color.Red;
+                }
+                // Revision for the EndaSoft editor
+                UInt32 rev = br.ReadUInt32();
+
+                // Git revision
+                byte[] gitbuf = new byte[40];
+                br.Read(gitbuf, 0, gitbuf.Length);
+                String git = ASCIIEncoding.ASCII.GetString(gitbuf);
+                revL.Text = rev.ToString();
+                gitL.Text = git;
+
+                // CRC comparision
+                ms.Seek(-4, SeekOrigin.End);
+                UInt32 crc = br.ReadUInt32();
+                UInt32 computed_crc = Crc32.Compute(buf, 0, buf.Length - 4);
+                crcL.Text = crc.ToString("X8") + " (" + (crc == computed_crc ? "OK" : "FAILED") + ")";
+                crcL.ForeColor = crc == computed_crc ? Color.Green : Color.Red;
+                // Creation time
+                createdL.Text = fi.CreationTime.ToString();
+            }
+        }
+
+        delegate void OpenFileDelegate(string file);
+
+        private void browseB_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                OpenFile(openFileDialog1.FileName);
+            }
+        }
+
+        private void updateB_Click(object sender, EventArgs e)
+        {
+            PLC p = SelectedPLC;
+            if (p == null) return;
+            p.UpdateFirmware(m_path);
+        }
+
+        private void infoP_Enter(object sender, EventArgs e)
+        {
+            PLC p = SelectedPLC;
+            if (p == null) return;
+            Response resp = p.Cmd("info");
+            infoL.Text = resp.String;
         }
     }
 }

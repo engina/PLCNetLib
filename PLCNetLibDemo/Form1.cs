@@ -13,7 +13,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Runtime.Remoting.Messaging;
 
-namespace PLCTCPBenchmark
+namespace PLCNetLibDemo
 {
     public partial class Form1 : Form
     {

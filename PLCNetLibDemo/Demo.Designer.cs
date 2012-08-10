@@ -1,4 +1,4 @@
-﻿namespace PLCTCPBenchmark
+﻿namespace PLCNetLibDemo
 {
     partial class Demo
     {
@@ -138,10 +138,32 @@
             this.cmdRespTB = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.cmdTB = new System.Windows.Forms.TextBox();
+            this.fwP = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.updateFlagL = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.statusL = new System.Windows.Forms.Label();
+            this.crcL = new System.Windows.Forms.Label();
+            this.label66 = new System.Windows.Forms.Label();
+            this.createdL = new System.Windows.Forms.Label();
+            this.sizeL = new System.Windows.Forms.Label();
+            this.gitL = new System.Windows.Forms.Label();
+            this.revL = new System.Windows.Forms.Label();
+            this.label44 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.browseB = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.logTB = new System.Windows.Forms.TextBox();
             this.helpRTB = new System.Windows.Forms.RichTextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.updateB = new System.Windows.Forms.Button();
+            this.infoP = new System.Windows.Forms.TabPage();
+            this.infoL = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.portNUD)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -167,6 +189,8 @@
             this.readMultiP.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.readMultiDGV)).BeginInit();
             this.Cmd.SuspendLayout();
+            this.fwP.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -175,6 +199,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.infoP.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -299,6 +324,7 @@
             this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Left;
             this.tabControl1.Controls.Add(this.finderP);
             this.tabControl1.Controls.Add(this.connectP);
+            this.tabControl1.Controls.Add(this.infoP);
             this.tabControl1.Controls.Add(this.miP);
             this.tabControl1.Controls.Add(this.mfP);
             this.tabControl1.Controls.Add(this.mbP);
@@ -310,6 +336,7 @@
             this.tabControl1.Controls.Add(this.readWriteP);
             this.tabControl1.Controls.Add(this.readMultiP);
             this.tabControl1.Controls.Add(this.Cmd);
+            this.tabControl1.Controls.Add(this.fwP);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl1.ItemSize = new System.Drawing.Size(20, 100);
@@ -325,6 +352,7 @@
             // 
             // finderP
             // 
+            this.finderP.Controls.Add(this.label23);
             this.finderP.Controls.Add(this.label5);
             this.finderP.Controls.Add(this.scanPassTB);
             this.finderP.Controls.Add(this.scanAddB);
@@ -341,7 +369,7 @@
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(137, 229);
+            this.label5.Location = new System.Drawing.Point(137, 30);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(396, 13);
             this.label5.TabIndex = 5;
@@ -351,15 +379,16 @@
             // scanPassTB
             // 
             this.scanPassTB.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.scanPassTB.Location = new System.Drawing.Point(209, 247);
+            this.scanPassTB.Location = new System.Drawing.Point(209, 196);
             this.scanPassTB.Name = "scanPassTB";
             this.scanPassTB.Size = new System.Drawing.Size(120, 20);
             this.scanPassTB.TabIndex = 4;
+            this.scanPassTB.Text = "1234";
             // 
             // scanAddB
             // 
             this.scanAddB.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.scanAddB.Location = new System.Drawing.Point(347, 245);
+            this.scanAddB.Location = new System.Drawing.Point(347, 194);
             this.scanAddB.Name = "scanAddB";
             this.scanAddB.Size = new System.Drawing.Size(75, 23);
             this.scanAddB.TabIndex = 2;
@@ -1358,6 +1387,175 @@
             this.cmdTB.TabIndex = 0;
             this.cmdTB.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cmdTB_KeyUp);
             // 
+            // fwP
+            // 
+            this.fwP.AllowDrop = true;
+            this.fwP.Controls.Add(this.updateB);
+            this.fwP.Controls.Add(this.groupBox2);
+            this.fwP.Controls.Add(this.browseB);
+            this.fwP.Controls.Add(this.textBox1);
+            this.fwP.Location = new System.Drawing.Point(104, 4);
+            this.fwP.Name = "fwP";
+            this.fwP.Size = new System.Drawing.Size(664, 376);
+            this.fwP.TabIndex = 19;
+            this.fwP.Text = "Firmware Update";
+            this.fwP.UseVisualStyleBackColor = true;
+            this.fwP.DragDrop += new System.Windows.Forms.DragEventHandler(this.fwP_DragDrop);
+            this.fwP.DragEnter += new System.Windows.Forms.DragEventHandler(this.fwP_DragEnter);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.updateFlagL);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.statusL);
+            this.groupBox2.Controls.Add(this.crcL);
+            this.groupBox2.Controls.Add(this.label66);
+            this.groupBox2.Controls.Add(this.createdL);
+            this.groupBox2.Controls.Add(this.sizeL);
+            this.groupBox2.Controls.Add(this.gitL);
+            this.groupBox2.Controls.Add(this.revL);
+            this.groupBox2.Controls.Add(this.label44);
+            this.groupBox2.Controls.Add(this.label33);
+            this.groupBox2.Controls.Add(this.label17);
+            this.groupBox2.Controls.Add(this.label20);
+            this.groupBox2.Location = new System.Drawing.Point(153, 96);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(358, 212);
+            this.groupBox2.TabIndex = 5;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Info";
+            // 
+            // updateFlagL
+            // 
+            this.updateFlagL.AutoSize = true;
+            this.updateFlagL.Location = new System.Drawing.Point(78, 60);
+            this.updateFlagL.Name = "updateFlagL";
+            this.updateFlagL.Size = new System.Drawing.Size(0, 13);
+            this.updateFlagL.TabIndex = 12;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 59);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(65, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Update flag:";
+            // 
+            // statusL
+            // 
+            this.statusL.Location = new System.Drawing.Point(6, 178);
+            this.statusL.Name = "statusL";
+            this.statusL.Size = new System.Drawing.Size(346, 31);
+            this.statusL.TabIndex = 10;
+            this.statusL.Text = "You can drag and drop to this dialog";
+            this.statusL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // crcL
+            // 
+            this.crcL.AutoSize = true;
+            this.crcL.Location = new System.Drawing.Point(78, 120);
+            this.crcL.Name = "crcL";
+            this.crcL.Size = new System.Drawing.Size(0, 13);
+            this.crcL.TabIndex = 9;
+            // 
+            // label66
+            // 
+            this.label66.AutoSize = true;
+            this.label66.Location = new System.Drawing.Point(7, 119);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(32, 13);
+            this.label66.TabIndex = 8;
+            this.label66.Text = "CRC:";
+            // 
+            // createdL
+            // 
+            this.createdL.AutoSize = true;
+            this.createdL.Location = new System.Drawing.Point(78, 100);
+            this.createdL.Name = "createdL";
+            this.createdL.Size = new System.Drawing.Size(0, 13);
+            this.createdL.TabIndex = 7;
+            // 
+            // sizeL
+            // 
+            this.sizeL.AutoSize = true;
+            this.sizeL.Location = new System.Drawing.Point(78, 80);
+            this.sizeL.Name = "sizeL";
+            this.sizeL.Size = new System.Drawing.Size(0, 13);
+            this.sizeL.TabIndex = 6;
+            // 
+            // gitL
+            // 
+            this.gitL.AutoSize = true;
+            this.gitL.Location = new System.Drawing.Point(78, 40);
+            this.gitL.Name = "gitL";
+            this.gitL.Size = new System.Drawing.Size(0, 13);
+            this.gitL.TabIndex = 5;
+            // 
+            // revL
+            // 
+            this.revL.AutoSize = true;
+            this.revL.Location = new System.Drawing.Point(78, 20);
+            this.revL.Name = "revL";
+            this.revL.Size = new System.Drawing.Size(0, 13);
+            this.revL.TabIndex = 4;
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(7, 99);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(47, 13);
+            this.label44.TabIndex = 3;
+            this.label44.Text = "Created:";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(7, 79);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(30, 13);
+            this.label33.TabIndex = 2;
+            this.label33.Text = "Size:";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(7, 39);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(62, 13);
+            this.label17.TabIndex = 1;
+            this.label17.Text = "Git revision:";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(7, 19);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(51, 13);
+            this.label20.TabIndex = 0;
+            this.label20.Text = "Revision:";
+            // 
+            // browseB
+            // 
+            this.browseB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.browseB.Location = new System.Drawing.Point(436, 68);
+            this.browseB.Name = "browseB";
+            this.browseB.Size = new System.Drawing.Size(75, 23);
+            this.browseB.TabIndex = 4;
+            this.browseB.Text = "Browse";
+            this.browseB.UseVisualStyleBackColor = true;
+            this.browseB.Click += new System.EventHandler(this.browseB_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.Location = new System.Drawing.Point(153, 69);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(277, 20);
+            this.textBox1.TabIndex = 3;
+            // 
             // logTB
             // 
             this.logTB.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1415,6 +1613,53 @@
             this.splitContainer2.SplitterDistance = 384;
             this.splitContainer2.TabIndex = 23;
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // updateB
+            // 
+            this.updateB.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.updateB.ForeColor = System.Drawing.Color.Red;
+            this.updateB.Location = new System.Drawing.Point(242, 314);
+            this.updateB.Name = "updateB";
+            this.updateB.Size = new System.Drawing.Size(180, 46);
+            this.updateB.TabIndex = 6;
+            this.updateB.Text = "UPDATE";
+            this.updateB.UseVisualStyleBackColor = false;
+            this.updateB.Click += new System.EventHandler(this.updateB_Click);
+            // 
+            // infoP
+            // 
+            this.infoP.Controls.Add(this.infoL);
+            this.infoP.Location = new System.Drawing.Point(104, 4);
+            this.infoP.Name = "infoP";
+            this.infoP.Size = new System.Drawing.Size(664, 376);
+            this.infoP.TabIndex = 20;
+            this.infoP.Text = "Info";
+            this.infoP.UseVisualStyleBackColor = true;
+            this.infoP.Enter += new System.EventHandler(this.infoP_Enter);
+            // 
+            // infoL
+            // 
+            this.infoL.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.infoL.Location = new System.Drawing.Point(0, 0);
+            this.infoL.Name = "infoL";
+            this.infoL.Size = new System.Drawing.Size(664, 376);
+            this.infoL.TabIndex = 0;
+            this.infoL.Text = "label23";
+            this.infoL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label23
+            // 
+            this.label23.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(147, 199);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(56, 13);
+            this.label23.TabIndex = 6;
+            this.label23.Text = "Password:";
+            // 
             // Demo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1464,6 +1709,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.readMultiDGV)).EndInit();
             this.Cmd.ResumeLayout(false);
             this.Cmd.PerformLayout();
+            this.fwP.ResumeLayout(false);
+            this.fwP.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -1473,6 +1722,7 @@
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.infoP.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1592,5 +1842,27 @@
         private System.Windows.Forms.Button readMultiAsyncB;
         private System.Windows.Forms.Button readMultiB;
         private System.Windows.Forms.Label readMultiStatusL;
+        private System.Windows.Forms.TabPage fwP;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label updateFlagL;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label statusL;
+        private System.Windows.Forms.Label crcL;
+        private System.Windows.Forms.Label label66;
+        private System.Windows.Forms.Label createdL;
+        private System.Windows.Forms.Label sizeL;
+        private System.Windows.Forms.Label gitL;
+        private System.Windows.Forms.Label revL;
+        private System.Windows.Forms.Label label44;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Button browseB;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button updateB;
+        private System.Windows.Forms.TabPage infoP;
+        private System.Windows.Forms.Label infoL;
+        private System.Windows.Forms.Label label23;
     }
 }

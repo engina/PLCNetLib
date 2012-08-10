@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace PLCTCPBenchmark
+namespace PLCNetLibDemo
 {
     static class Program
     {

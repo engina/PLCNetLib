@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>00:25:fc:00:0d:62 1234 reboot</StartArguments>
+    <StartArguments>00:25:fc:00:0d:09 1234 FW plc-275-72937ceaeb92b621f812e1c5006d7775f2743897.bin</StartArguments>
+    <StartWorkingDirectory>C:\Users\Engin\Code\ENDA\plc\Debug\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

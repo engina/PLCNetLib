@@ -1,4 +1,4 @@
-﻿namespace PLCTCPBenchmark
+﻿namespace PLCNetLibDemo
 {
     partial class Form1
     {
