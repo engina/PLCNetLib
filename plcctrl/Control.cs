@@ -59,7 +59,7 @@ namespace plcctrl
                 return false;
             }
             Console.Out.WriteLine("\nProgrammed. Rebooting.");
-            //Cmd("reboot");
+            Cmd("reboot");
             return true;
         }
 
