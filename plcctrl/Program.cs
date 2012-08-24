@@ -39,7 +39,6 @@ namespace plcctrl
                 ip = new IPEndPoint(IPAddress.Parse(args[0]), 23);
                 doit(ip, args);
             }
-            Console.In.ReadLine();
         }
 
         static void doit(IPEndPoint ip, string[] args)

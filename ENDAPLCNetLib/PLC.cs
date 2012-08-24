@@ -161,7 +161,8 @@ namespace ENDA.PLCNetLib
         /// </summary>
         void Rewrite()
         {
-            Send(m_lastCmd);
+            if(m_lastCmd.Length > 0)
+                Send(m_lastCmd);
         }
 
         void Send(byte[] data)
@@ -416,8 +417,7 @@ namespace ENDA.PLCNetLib
             log.Info("Connecting...");
             // In case m_tcp is disposed. Fixes #63.
             m_tcp = new TcpClient();
-            m_tcp.ReceiveTimeout = m_tcp.SendTimeout = 500000;
-            m_tcp.Client.ReceiveTimeout = m_tcp.Client.SendTimeout = 999999999;
+            m_tcp.ReceiveTimeout = m_tcp.SendTimeout = 5000;
             try
             {
                 m_tcp.Connect(m_pip);
@@ -859,26 +859,27 @@ namespace ENDA.PLCNetLib
                 throw new Exception("Access not granted");
             }
             log.Info("Sending firmware...");
-            FileStream fs = new FileStream(path, FileMode.Open);
-
-            data = new byte[1024];
-            int r = 0, sent = 0;
-            while ((r = fs.Read(data, 0, data.Length)) != 0)
+            using (FileStream fs = new FileStream(path, FileMode.Open))
             {
-                downloader.Client.Send(data, r, 0);
-                sent += r;
-                log.Info((sent*100/fs.Length).ToString() +"% sent");
+                data = new byte[1024];
+                int r = 0, sent = 0;
+                while ((r = fs.Read(data, 0, data.Length)) != 0)
+                {
+                    downloader.Client.Send(data, r, 0);
+                    sent += r;
+                    log.Info((sent * 100 / fs.Length).ToString() + "% sent");
+                }
+                data = new byte[22];
+                sock.Receive(data);
+                str = ASCIIEncoding.ASCII.GetString(data);
+                if (!str.StartsWith("Firmware programmed"))
+                {
+                    log.Error("Could not program firmware");
+                    downloader.Close();
+                    throw new Exception("Could not program firmware");
+                }
+                log.Info("Firmware succesfully programmed, now a reboot is required.");
             }
-            data = new byte[22];
-            sock.Receive(data);
-            str = ASCIIEncoding.ASCII.GetString(data);
-            if (!str.StartsWith("Firmware programmed"))
-            {
-                log.Error("Could not program firmware");
-                downloader.Close();
-                throw new Exception("Could not program firmware");
-            }
-            log.Info("Firmware succesfully programmed, now a reboot is required.");
         }
     }
 }

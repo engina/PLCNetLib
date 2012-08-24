@@ -47,7 +47,57 @@ namespace ENDA.PLCNetLib
         /// <exception cref="SocketException">Thrown when scanner cannot bind to local port 3802. Can happen when another process is using that local port.</exception>
         public Finder()
         {
-            m_remoteEP.Address = IPAddress.Broadcast;
+        }
+        
+        private void ReceiveCallback(IAsyncResult ar)
+        {
+            UdpClient client = (UdpClient)ar.AsyncState;
+            byte[] data;
+            try
+            {
+                data = client.EndReceive(ar, ref m_remoteEP);
+                if (data.Length < 6)
+                {
+                    client.BeginReceive(new AsyncCallback(ReceiveCallback), client);
+                    return;
+                }
+                BinaryReader br = new BinaryReader(new MemoryStream(data));
+                String str = String.Empty;
+                for (int i = 0; i < 6; i++)
+                    str += Convert.ToString(br.ReadByte(), 16).PadLeft(2, '0') + ":";
+                str = str.Substring(0, str.Length - 1);
+                if (data.Length > 6)
+                {
+                    byte proto = br.ReadByte();
+                    if (proto == 2)
+                    {
+                        int rev = br.ReadInt32();
+                        //string label = br.ReadString();
+                    }
+                }
+                if (!m_dict.ContainsKey(str) || !m_dict[str].Equals(m_remoteEP.Address))
+                {
+                    m_dict[str] = m_remoteEP.Address;
+                    if (DeviceFound != null)
+                        DeviceFound(str, m_dict[str]);
+                }
+                client.BeginReceive(new AsyncCallback(ReceiveCallback), client);
+            }
+            catch (ObjectDisposedException e)
+            {
+            }
+        }
+
+        /// <summary>
+        /// <p>
+        /// Starts a scan. Results will be gathered as PLC devices start sending their informations. This method is not blocking.
+        /// </p>
+        /// You can wait for <paramref name="DeviceFound"/> event to be fired to be notified about any new devices found.
+        /// <p>
+        /// </p>
+        /// </summary>
+        public void Scan()
+        {
             NetworkInterface[] ifs = NetworkInterface.GetAllNetworkInterfaces();
             foreach (NetworkInterface i in ifs)
             {
@@ -66,63 +116,27 @@ namespace ENDA.PLCNetLib
                     m_udpClients.Add(client);
                 }
             }
-        }
-        
-        private void ReceiveCallback(IAsyncResult ar)
-        {
-            UdpClient client = (UdpClient)ar.AsyncState;
-            byte[] data = client.EndReceive(ar, ref m_remoteEP);
 
-            if (data.Length < 6)
-            {
-                client.BeginReceive(new AsyncCallback(ReceiveCallback), client);
-                return;
-            }
-
-            BinaryReader br = new BinaryReader(new MemoryStream(data));
-            String str = String.Empty;
-            for (int i = 0; i < 6; i++)
-                str += Convert.ToString(br.ReadByte(), 16).PadLeft(2, '0') + ":";
-            str = str.Substring(0, str.Length-1);
-            if (data.Length > 6)
-            {
-                byte proto = br.ReadByte();
-                if (proto == 2)
-                {
-                    int rev = br.ReadInt32();
-                    //string label = br.ReadString();
-                }
-            }
-            if (!m_dict.ContainsKey(str) || !m_dict[str].Equals(m_remoteEP.Address))
-            {
-                m_dict[str] = m_remoteEP.Address;
-                if (DeviceFound != null)
-                    DeviceFound(str, m_dict[str]);
-            }
-            client.BeginReceive(new AsyncCallback(ReceiveCallback), client);
-        }
-
-        /// <summary>
-        /// <p>
-        /// Starts a scan. Results will be gathered as PLC devices start sending their informations. This method is not blocking.
-        /// </p>
-        /// You can wait for <paramref name="DeviceFound"/> event to be fired to be notified about any new devices found.
-        /// <p>
-        /// </p>
-        /// </summary>
-        public void Scan()
-        {
             foreach (UdpClient client in m_udpClients)
             {
                 client.Send(Encoding.ASCII.GetBytes("PING"), 4, m_remoteEP);
             }
+
+            Timer t = new Timer((x) => { ReleasePorts(); }, null, 10000, System.Threading.Timeout.Infinite);
         }
 
         public void ReleasePorts()
         {
             foreach(UdpClient client in m_udpClients)
             {
-                client.Close();
+                try
+                {
+                    client.Close();
+                }
+                catch (SocketException e)
+                {
+                    log.Error(e.Message);
+                }
             }
             m_udpClients.Clear();
         }

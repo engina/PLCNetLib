@@ -713,6 +713,7 @@ namespace PLCNetLibDemo
         }
 
         string m_path = null;
+
         void OpenFile(string file)
         {
             FileInfo fi = new FileInfo(file);
