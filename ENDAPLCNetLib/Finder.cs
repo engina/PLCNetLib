@@ -96,6 +96,7 @@ namespace ENDA.PLCNetLib
         /// <p>
         /// </p>
         /// </summary>
+        Timer m_t;
         public void Scan()
         {
             NetworkInterface[] ifs = NetworkInterface.GetAllNetworkInterfaces();
@@ -122,7 +123,7 @@ namespace ENDA.PLCNetLib
                 client.Send(Encoding.ASCII.GetBytes("PING"), 4, m_remoteEP);
             }
 
-            Timer t = new Timer((x) => { ReleasePorts(); }, null, 10000, System.Threading.Timeout.Infinite);
+            m_t = new Timer((x) => { ReleasePorts(); }, null, 10000, System.Threading.Timeout.Infinite);
         }
 
         public void ReleasePorts()

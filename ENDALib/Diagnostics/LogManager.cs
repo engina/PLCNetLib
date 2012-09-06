@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
+using System.Threading;
 
 namespace ENDA.Diagnostics
 {
@@ -18,9 +19,9 @@ namespace ENDA.Diagnostics
             None = Int32.MaxValue
         }
 
-        private static object m_lock = new object();
-        private static StreamWriter m_ts;
-        
+        private static int m_pid;
+        private static string m_id;
+
         public delegate void LogHandler(Level lvl, DateTime t, string source, string msg);
         public static event LogHandler LogFired;
         public static Level Filter = Level.Debug;
@@ -28,21 +29,18 @@ namespace ENDA.Diagnostics
 
         static LogManager()
         {
-            m_ts = File.CreateText(Assembly.GetCallingAssembly().GetName().Name + ".txt");
+            m_id = Process.GetCurrentProcess().ProcessName;
+            m_pid = Process.GetCurrentProcess().Id;
         }
 
         public static void Log(Level lvl, string source, string msg)
         {
-            lock (m_lock)
-            {
-                if (!Enabled) return;
-                if (lvl < Filter) return;
-                DateTime t = DateTime.Now;
-                if (LogFired != null)
-                    LogFired(lvl, t, source, msg);
-                m_ts.WriteLine("[" + t.ToString("HH:mm:ss.fff") + "] [" + lvl + "] [" + source + "] " + msg);
-                m_ts.Flush();
-            }
+            if (!Enabled) return;
+            if (lvl < Filter) return;
+            DateTime t = DateTime.Now;
+            if (LogFired != null)
+                LogFired(lvl, t, source, msg);
+            File.AppendAllText(m_id + ".txt", "[" + t.ToString("HH:mm:ss.fff") + "] [" + m_pid + "] [" + lvl + "] [" + source + "] " + msg);
         }
     }
 }
