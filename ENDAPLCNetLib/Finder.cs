@@ -5,7 +5,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
-using ENDA.PLCNetLib.Diagnostics;
+using ENDA.Diagnostics;
 using System.IO;
 
 namespace ENDA.PLCNetLib

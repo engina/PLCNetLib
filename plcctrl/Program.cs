@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
-using ENDA.PLCNetLib;
 using System.Threading;
+using ENDA.PLCNetLib;
 
 namespace plcctrl
 {

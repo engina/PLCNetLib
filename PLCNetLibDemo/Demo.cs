@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using ENDA.PLCNetLib;
 using System.Net;
 using System.Security.Authentication;
-using ENDA.PLCNetLib.Diagnostics;
+using ENDA.Diagnostics;
 using Be.Windows.Forms;
 using PLCNetLibDemo.Properties;
 using System.IO;

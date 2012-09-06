@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Diagnostics;
 
-namespace ENDA.PLCNetLib.Diagnostics
+namespace ENDA.Diagnostics
 {
     public static class LogManager
     {
@@ -28,14 +28,14 @@ namespace ENDA.PLCNetLib.Diagnostics
 
         static LogManager()
         {
-            m_ts = File.CreateText(Assembly.GetCallingAssembly().GetName().Name + "-" + Process.GetCurrentProcess().Id + ".txt");
+            m_ts = File.CreateText(Assembly.GetCallingAssembly().GetName().Name + ".txt");
         }
 
         public static void Log(Level lvl, string source, string msg)
         {
-            if (!Enabled) return;
             lock (m_lock)
             {
+                if (!Enabled) return;
                 if (lvl < Filter) return;
                 DateTime t = DateTime.Now;
                 if (LogFired != null)

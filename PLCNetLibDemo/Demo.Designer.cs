@@ -42,6 +42,7 @@
             this.plcCB = new System.Windows.Forms.ComboBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.finderP = new System.Windows.Forms.TabPage();
+            this.label23 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.scanPassTB = new System.Windows.Forms.TextBox();
             this.scanAddB = new System.Windows.Forms.Button();
@@ -52,6 +53,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.connectStatusL = new System.Windows.Forms.Label();
             this.connectB = new System.Windows.Forms.Button();
+            this.infoP = new System.Windows.Forms.TabPage();
+            this.infoL = new System.Windows.Forms.Label();
             this.miP = new System.Windows.Forms.TabPage();
             this.miWriteL = new System.Windows.Forms.Label();
             this.miReadL = new System.Windows.Forms.Label();
@@ -139,6 +142,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.cmdTB = new System.Windows.Forms.TextBox();
             this.fwP = new System.Windows.Forms.TabPage();
+            this.updateB = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.updateFlagL = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -160,15 +164,12 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.updateB = new System.Windows.Forms.Button();
-            this.infoP = new System.Windows.Forms.TabPage();
-            this.infoL = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.portNUD)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.finderP.SuspendLayout();
             this.connectP.SuspendLayout();
+            this.infoP.SuspendLayout();
             this.miP.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miOffsetNUD)).BeginInit();
             this.mfP.SuspendLayout();
@@ -199,7 +200,6 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            this.infoP.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -365,6 +365,16 @@
             this.finderP.Text = "Finder";
             this.finderP.UseVisualStyleBackColor = true;
             // 
+            // label23
+            // 
+            this.label23.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(147, 199);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(56, 13);
+            this.label23.TabIndex = 6;
+            this.label23.Text = "Password:";
+            // 
             // label5
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -472,6 +482,27 @@
             this.connectB.Text = "Connect";
             this.connectB.UseVisualStyleBackColor = true;
             this.connectB.Click += new System.EventHandler(this.connectB_Click);
+            // 
+            // infoP
+            // 
+            this.infoP.Controls.Add(this.infoL);
+            this.infoP.Location = new System.Drawing.Point(104, 4);
+            this.infoP.Name = "infoP";
+            this.infoP.Size = new System.Drawing.Size(664, 376);
+            this.infoP.TabIndex = 20;
+            this.infoP.Text = "Info";
+            this.infoP.UseVisualStyleBackColor = true;
+            this.infoP.Enter += new System.EventHandler(this.infoP_Enter);
+            // 
+            // infoL
+            // 
+            this.infoL.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.infoL.Location = new System.Drawing.Point(0, 0);
+            this.infoL.Name = "infoL";
+            this.infoL.Size = new System.Drawing.Size(664, 376);
+            this.infoL.TabIndex = 0;
+            this.infoL.Text = "label23";
+            this.infoL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // miP
             // 
@@ -1073,11 +1104,13 @@
             // 
             // timeWriteDTP
             // 
+            this.timeWriteDTP.CustomFormat = "dd MMMM yyyy ddddd, hh:mm:ss tt";
+            this.timeWriteDTP.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.timeWriteDTP.Location = new System.Drawing.Point(99, 50);
             this.timeWriteDTP.MaxDate = new System.DateTime(2099, 12, 31, 0, 0, 0, 0);
             this.timeWriteDTP.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             this.timeWriteDTP.Name = "timeWriteDTP";
-            this.timeWriteDTP.Size = new System.Drawing.Size(200, 20);
+            this.timeWriteDTP.Size = new System.Drawing.Size(250, 20);
             this.timeWriteDTP.TabIndex = 0;
             // 
             // runstopP
@@ -1403,6 +1436,18 @@
             this.fwP.DragDrop += new System.Windows.Forms.DragEventHandler(this.fwP_DragDrop);
             this.fwP.DragEnter += new System.Windows.Forms.DragEventHandler(this.fwP_DragEnter);
             // 
+            // updateB
+            // 
+            this.updateB.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
+            this.updateB.ForeColor = System.Drawing.Color.Red;
+            this.updateB.Location = new System.Drawing.Point(242, 314);
+            this.updateB.Name = "updateB";
+            this.updateB.Size = new System.Drawing.Size(180, 46);
+            this.updateB.TabIndex = 6;
+            this.updateB.Text = "UPDATE";
+            this.updateB.UseVisualStyleBackColor = false;
+            this.updateB.Click += new System.EventHandler(this.updateB_Click);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.updateFlagL);
@@ -1617,49 +1662,6 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // updateB
-            // 
-            this.updateB.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.updateB.ForeColor = System.Drawing.Color.Red;
-            this.updateB.Location = new System.Drawing.Point(242, 314);
-            this.updateB.Name = "updateB";
-            this.updateB.Size = new System.Drawing.Size(180, 46);
-            this.updateB.TabIndex = 6;
-            this.updateB.Text = "UPDATE";
-            this.updateB.UseVisualStyleBackColor = false;
-            this.updateB.Click += new System.EventHandler(this.updateB_Click);
-            // 
-            // infoP
-            // 
-            this.infoP.Controls.Add(this.infoL);
-            this.infoP.Location = new System.Drawing.Point(104, 4);
-            this.infoP.Name = "infoP";
-            this.infoP.Size = new System.Drawing.Size(664, 376);
-            this.infoP.TabIndex = 20;
-            this.infoP.Text = "Info";
-            this.infoP.UseVisualStyleBackColor = true;
-            this.infoP.Enter += new System.EventHandler(this.infoP_Enter);
-            // 
-            // infoL
-            // 
-            this.infoL.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.infoL.Location = new System.Drawing.Point(0, 0);
-            this.infoL.Name = "infoL";
-            this.infoL.Size = new System.Drawing.Size(664, 376);
-            this.infoL.TabIndex = 0;
-            this.infoL.Text = "label23";
-            this.infoL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label23
-            // 
-            this.label23.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(147, 199);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(56, 13);
-            this.label23.TabIndex = 6;
-            this.label23.Text = "Password:";
-            // 
             // Demo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1678,6 +1680,7 @@
             this.finderP.PerformLayout();
             this.connectP.ResumeLayout(false);
             this.connectP.PerformLayout();
+            this.infoP.ResumeLayout(false);
             this.miP.ResumeLayout(false);
             this.miP.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.miOffsetNUD)).EndInit();
@@ -1722,7 +1725,6 @@
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            this.infoP.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

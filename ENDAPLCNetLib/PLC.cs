@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Security.Authentication;
 using ENDA.PLCNetLib.Accessors;
-using ENDA.PLCNetLib.Diagnostics;
+using ENDA.Diagnostics;
 using System.Runtime.Remoting.Messaging;
 
 namespace ENDA.PLCNetLib
