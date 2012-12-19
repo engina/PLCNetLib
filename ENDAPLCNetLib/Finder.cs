@@ -99,30 +99,34 @@ namespace ENDA.PLCNetLib
         Timer m_t;
         public void Scan()
         {
-            NetworkInterface[] ifs = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (NetworkInterface i in ifs)
+            // Rebind to ports if they are released by ReleasePorts()
+            if (m_udpClients.Count == 0)
             {
-                Console.Out.WriteLine(i.Name);
-                if (i.OperationalStatus != OperationalStatus.Up) continue;
-                if (!i.Supports(NetworkInterfaceComponent.IPv4)) continue;
-                IPInterfaceProperties prop = i.GetIPProperties();
-
-                foreach (UnicastIPAddressInformation ip in prop.UnicastAddresses)
+                NetworkInterface[] ifs = NetworkInterface.GetAllNetworkInterfaces();
+                foreach (NetworkInterface i in ifs)
                 {
+                    Console.Out.WriteLine(i.Name);
+                    if (i.OperationalStatus != OperationalStatus.Up) continue;
+                    if (!i.Supports(NetworkInterfaceComponent.IPv4)) continue;
+                    IPInterfaceProperties prop = i.GetIPProperties();
 
-                    if (ip.Address.GetAddressBytes().Length != 4) continue;
-                    UdpClient client = new UdpClient(new IPEndPoint(ip.Address, 3802));
-                    client.BeginReceive(new AsyncCallback(ReceiveCallback), client);
-                    client.EnableBroadcast = true;
-                    m_udpClients.Add(client);
+                    foreach (UnicastIPAddressInformation ip in prop.UnicastAddresses)
+                    {
+
+                        if (ip.Address.GetAddressBytes().Length != 4) continue;
+                        UdpClient client = new UdpClient(new IPEndPoint(ip.Address, 3802));
+                        client.BeginReceive(new AsyncCallback(ReceiveCallback), client);
+                        client.EnableBroadcast = true;
+                        m_udpClients.Add(client);
+                    }
                 }
             }
-
             foreach (UdpClient client in m_udpClients)
             {
                 client.Send(Encoding.ASCII.GetBytes("PING"), 4, m_remoteEP);
             }
 
+            // Release the port after some time, as other programs such as EndaSoft might want to use them.
             m_t = new Timer((x) => { ReleasePorts(); }, null, 10000, System.Threading.Timeout.Infinite);
         }
 
